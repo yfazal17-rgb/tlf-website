@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheLifeFolder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment: oklch(17% 0.048 148);
+    --parchment-dark: oklch(21% 0.052 148);
+    --ink: oklch(96% 0.012 148);
+    --ink-mid: oklch(72% 0.025 148);
+    --ink-light: oklch(48% 0.035 148);
+    --gold: oklch(64% 0.20 145);
+    --gold-dark: oklch(52% 0.18 145);
+    --leaf: oklch(75% 0.22 142);
+    --border: oklch(26% 0.055 148);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'Space Mono', monospace;
+    --cond: 'Barlow Condensed', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: var(--serif);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--gold); color: var(--parchment); }
+
+  /* Ticker */
+  .ticker-wrap {
+    background: var(--gold);
+    color: var(--parchment);
+    overflow: hidden;
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 0;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-track span {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    padding: 0 40px;
+    opacity: 0.85;
+  }
+  .ticker-track span.dot {
+    color: var(--parchment);
+    padding: 0;
+    opacity: 0.5;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--parchment);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .nav-logo img { width: 28px; height: 28px; image-rendering: pixelated; }
+  .nav-wordmark {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* Hero */
+  .hero {
+    padding: 80px 32px 60px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 40px;
+    align-items: end;
+  }
+  .hero-left {}
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 24px;
+  }
+  .hero-title {
+    font-family: var(--cond);
+    font-size: clamp(72px, 11vw, 160px);
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 300;
+  }
+  .hero-sub {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    max-width: 520px;
+  }
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  .hero-logo-wrap {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-logo-wrap img {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+    filter: drop-shadow(4px 6px 0px var(--gold));
+  }
+  .hero-index {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-light);
+    letter-spacing: 0.1em;
+    text-align: right;
+    line-height: 1.8;
+  }
+  .hero-index strong {
+    color: var(--ink);
+    display: block;
+    font-size: 22px;
+    font-family: var(--cond);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  /* Section Label */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    padding: 12px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Archive */
+  .archive-section { padding: 0 32px 80px; }
+
+  .filter-bar {
+    display: flex;
+    gap: 0;
+    margin: 28px 0 36px;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+  .filter-btn {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border: none;
+    border-right: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:last-child { border-right: none; }
+  .filter-btn:hover { background: var(--parchment-dark); color: var(--ink); }
+  .filter-btn.active { background: var(--gold); color: var(--parchment); }
+
+  .archive-grid {
+    columns: 4;
+    column-gap: 1px;
+    gap: 1px;
+  }
+  .archive-item {
+    break-inside: avoid;
+    margin-bottom: 1px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: var(--parchment-dark);
+  }
+
+  .archive-item:hover .item-overlay { opacity: 1; }
+  .archive-item:hover .placeholder-inner { transform: scale(1.03); }
+
+  .placeholder-inner {
+    width: 100%;
+    transition: transform 0.4s ease;
+    display: block;
+  }
+  .item-overlay {
+    position: absolute;
+    inset: 0;
+    background: oklch(10% 0.04 148);
+    opacity: 0;
+    transition: opacity 0.25s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+  .item-overlay-title {
+    font-family: var(--cond);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--parchment);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+  .item-overlay-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,18,12,0.88);
+    z-index: 200;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+  }
+  .modal-drawer {
+    width: min(640px, 90vw);
+    background: var(--parchment);
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  .modal-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--parchment);
+    z-index: 1;
+  }
+  .modal-close {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-mid);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { background: var(--gold); color: var(--parchment); border-color: var(--gold); }
+  .modal-body { padding: 40px 32px; flex: 1; }
+  .modal-placeholder {
+    width: 100%;
+    background: var(--parchment-dark);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-title {
+    font-family: var(--cond);
+    font-size: 42px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .modal-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .modal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+  .modal-desc {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--ink-mid);
+  }
+  .modal-meta {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .modal-meta-item { }
+  .modal-meta-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+  .modal-meta-val {
+    font-family: var(--cond);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* Manifesto */
+  .manifesto-section {
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .manifesto-left {
+    padding: 80px 32px;
+    border-right: 1px solid var(--border);
+  }
+  .manifesto-right {
+    padding: 80px 32px;
+    background: var(--gold);
+    color: var(--parchment);
+  }
+  .manifesto-heading {
+    font-family: var(--cond);
+    font-size: 72px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    margin-bottom: 40px;
+  }
+  .manifesto-text {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--ink-mid);
+  }
+  .manifesto-right .manifesto-text { color: oklch(20% 0.04 148); }
+  .manifesto-right .manifesto-heading { color: oklch(14% 0.04 148); }
+
+  .manifesto-pull {
+    font-family: var(--cond);
+    font-size: 32px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.2;
+    color: var(--leaf);
+    margin: 40px 0 0;
+  }
+
+  /* About */
+  .about-section {
+    border-top: 1px solid var(--border);
+    padding: 80px 32px;
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .about-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    padding-top: 6px;
+  }
+  .about-heading {
+    font-family: var(--cond);
+    font-size: 52px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    margin-bottom: 28px;
+  }
+  .about-body {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink-mid);
+  }
+
+  /* Writings strip */
+  .writings-section {
+    border-top: 1px solid var(--border);
+  }
+  .writing-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 160px;
+    align-items: center;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    gap: 32px;
+  }
+  .writing-item:hover { background: var(--parchment-dark); }
+
+  .writing-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.1em;
+  }
+  .writing-title {
+    font-family: var(--cond);
+    font-size: 22px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .writing-title span {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    display: block;
+    color: var(--ink-mid);
+    text-transform: none;
+    margin-top: 2px;
+    letter-spacing: 0;
+  }
+  .writing-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: right;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    background: oklch(12% 0.042 148);
+    color: var(--ink);
+    padding: 60px 32px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    align-items: end;
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .footer-brand img { width: 36px; height: 36px; image-rendering: pixelated; opacity: 0.9; }
+  .footer-brand-name {
+    font-family: var(--cond);
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .footer-tagline {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-light);
+    text-align: right;
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+  }
+
+  /* Stripe placeholders */
+  .stripe-ph {
+    width: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      oklch(23% 0.055 148),
+      oklch(23% 0.055 148) 2px,
+      transparent 2px,
+      transparent 12px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stripe-ph-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    background: var(--parchment-dark);
+    padding: 4px 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#b5863a",
+  "heroSize": 120,
+  "showWritings": true,
+  "showManifesto": true,
+  "tagline": "everything that matters, filed."
+}/*EDITMODE-END*/;
+
+// ── Data ─────────────────────────────────────────────────────────────
+const ARCHIVE_ITEMS = [
+  { id:1, title:"Margiela SS00", tag:"Vintage Find", cat:"vintage", desc:"The iconic flat shoes, tabis, deconstructed blazers. A season that redefined what fashion could be — anti-spectacle as spectacle.", era:"2000", medium:"Research", h:300 },
+  { id:2, title:"The Folder Grows", tag:"Mood Board", cat:"moodboard", desc:"A collection of images around the metaphor of growth inside constraint — folders, archives, pressure, bloom.", era:"2024", medium:"Digital", h:220 },
+  { id:3, title:"YSL Le Smoking", tag:"Archival Ref", cat:"vintage", desc:"1966. A tuxedo suit for a woman. The moment fashion became a political act.", era:"1966", medium:"Reference", h:260 },
+  { id:4, title:"On Dressing With Intent", tag:"Writing", cat:"writing", desc:"A short essay on why what you wear is the first thing you publish every day.", era:"2025", medium:"Essay", h:180 },
+  { id:5, title:"Ralph in Colorado", tag:"Pop Culture", cat:"popculture", desc:"The lifestyle myth made tangible. Ranch, denim, horses, a kind of American dream that never existed but always felt real.", era:"1990s", medium:"Reference", h:280 },
+  { id:6, title:"Nude Project Lookbook", tag:"Reference", cat:"moodboard", desc:"How a brand built on sincerity became the cleanest streetwear story in Europe.", era:"2023", medium:"Lookbook", h:200 },
+  { id:7, title:"JW Anderson S/S 2024", tag:"Archival Ref", cat:"vintage", desc:"Garments that ask questions before you ask them. The trompe l'oeil logic of desire.", era:"2024", medium:"Research", h:240 },
+  { id:8, title:"The Archive as Identity", tag:"Manifesto Note", cat:"writing", desc:"Everything you save says something about who you're becoming. This folder is not nostalgia — it's a map.", era:"2025", medium:"Notes", h:200 },
+  { id:9, title:"Downtown, Late 90s", tag:"Pop Culture", cat:"popculture", desc:"Before the algorithm. When wearing something obscure was its own currency.", era:"1998", medium:"Reference", h:320 },
+  { id:10, title:"Fabric Studies No.1", tag:"Material", cat:"moodboard", desc:"Raw linen, stonewashed denim, aged leather — textures that carry history.", era:"2025", medium:"Physical", h:220 },
+  { id:11, title:"Helmut Lang FW98", tag:"Vintage Find", cat:"vintage", desc:"Bondage straps on suiting. The moment utilitarian became luxury.", era:"1998", medium:"Research", h:260 },
+  { id:12, title:"Notes on Color", tag:"Writing", cat:"writing", desc:"Why I keep returning to the same palette — ink, sand, the color of old paper.", era:"2025", medium:"Essay", h:180 },
+];
+
+const WRITINGS = [
+  { id:1, num:"001", title:"On Dressing With Intent", sub:"The first publication happens before you leave the house", tag:"Essay", date:"Mar 2025" },
+  { id:2, num:"002", title:"The Archive as Identity", sub:"Everything you save says something about who you're becoming", tag:"Manifesto", date:"Jan 2025" },
+  { id:3, num:"003", title:"Notes on Color", sub:"Why I keep returning to the same palette", tag:"Notes", date:"Apr 2025" },
+  { id:4, num:"004", title:"Why Margiela Still Matters", sub:"Anti-fashion as the purest form of fashion", tag:"Essay", date:"Dec 2024" },
+];
+
+const CATS = ["all","vintage","moodboard","writing","popculture"];
+const CAT_LABELS = { all:"All", vintage:"Vintage", moodboard:"Mood Boards", writing:"Writing", popculture:"Pop Culture" };
+
+// ── Placeholder ───────────────────────────────────────────────────────
+function Ph({ height, label }) {
+  return (
+    <div className="stripe-ph" style={{ height }}>
+      <span className="stripe-ph-label">{label}</span>
+    </div>
+  );
+}
+
+// ── Archive Item ──────────────────────────────────────────────────────
+function ArchiveCard({ item, onClick }) {
+  return (
+    <div className="archive-item" onClick={() => onClick(item)}>
+      <div className="placeholder-inner">
+        <Ph height={item.h} label={item.tag} />
+      </div>
+      <div className="item-overlay">
+        <div className="item-overlay-title">{item.title}</div>
+        <div className="item-overlay-tag">{item.tag} · {item.era}</div>
+      </div>
+    </div>
+  );
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────
+function Modal({ item, onClose }) {
+  if (!item) return null;
+  React.useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-drawer" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <span style={{fontFamily:'var(--mono)',fontSize:'9px',letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--ink-light)'}}>
+            {item.tag} · TLF Archive
+          </span>
+          <button className="modal-close" onClick={onClose}>Close ✕</button>
+        </div>
+        <div className="modal-body">
+          <div className="modal-placeholder" style={{ height: 340 }}>
+            <Ph height={340} label={item.tag} />
+          </div>
+          <div className="modal-tag">{item.tag}</div>
+          <div className="modal-title">{item.title}</div>
+          <div className="modal-divider"></div>
+          <div className="modal-desc">{item.desc}</div>
+          <div className="modal-meta">
+            <div className="modal-meta-item">
+              <div className="modal-meta-label">Era</div>
+              <div className="modal-meta-val">{item.era}</div>
+            </div>
+            <div className="modal-meta-item">
+              <div className="modal-meta-label">Medium</div>
+              <div className="modal-meta-val">{item.medium}</div>
+            </div>
+            <div className="modal-meta-item">
+              <div className="modal-meta-label">Category</div>
+              <div className="modal-meta-val" style={{textTransform:'capitalize'}}>{CAT_LABELS[item.cat]}</div>
+            </div>
+            <div className="modal-meta-item">
+              <div className="modal-meta-label">Filed by</div>
+              <div className="modal-meta-val">TLF</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [cat, setCat] = React.useState('all');
+  const [modal, setModal] = React.useState(null);
+
+  const filtered = cat === 'all' ? ARCHIVE_ITEMS : ARCHIVE_ITEMS.filter(i => i.cat === cat);
+
+  // Apply dynamic tweaks
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--gold', tweaks.accentColor);
+    document.documentElement.style.setProperty('--gold-dark', tweaks.accentColor);
+  }, [tweaks.accentColor]);
+
+  const logoSrc = 'uploads/images_upload-1777114486858.png';
+
+  const TICKER_ITEMS = ['TheLifeFolder','✦','Archive','✦','Est. 2024','✦','Everything That Matters, Filed','✦','Vintage','✦','Culture','✦','Craft','✦'];
+  const tickerContent = [...TICKER_ITEMS,...TICKER_ITEMS].map((t,i) =>
+    t === '✦' ? <span className="dot" key={i}>✦</span> : <span key={i}>{t}</span>
+  );
+
+  return (
+    <>
+      {/* Ticker */}
+      <div className="ticker-wrap">
+        <div className="ticker-track">{tickerContent}</div>
+      </div>
+
+      {/* Nav */}
+      <nav>
+        <div className="nav-logo" onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
+          <img src={logoSrc} alt="TLF" />
+          <span className="nav-wordmark">TheLifeFolder</span>
+        </div>
+        <ul className="nav-links">
+          <li><a href="#archive">Archive</a></li>
+          <li><a href="#manifesto">Manifesto</a></li>
+          <li><a href="#writings">Writing</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+
+      {/* Hero */}
+      <section className="hero" id="top">
+        <div className="hero-left">
+          <div className="hero-eyebrow">Est. 2024 · Personal Archive · Becoming a Brand</div>
+          <h1 className="hero-title" style={{fontSize: tweaks.heroSize}}>
+            The<br/><em>Life</em><br/>Folder
+          </h1>
+          <p className="hero-sub">{tweaks.tagline}</p>
+        </div>
+        <div className="hero-right">
+          <div className="hero-logo-wrap">
+            <img src={logoSrc} alt="TheLifeFolder" />
+          </div>
+          <div className="hero-index">
+            <strong>{ARCHIVE_ITEMS.length}</strong>
+            items filed
+            <br/><br/>
+            <strong>{WRITINGS.length}</strong>
+            texts written
+          </div>
+        </div>
+      </section>
+
+      {/* Archive */}
+      <div id="archive">
+        <div className="section-label">§ Archive · Browse the Folder</div>
+        <section className="archive-section">
+          <div className="filter-bar">
+            {CATS.map(c => (
+              <button key={c} className={`filter-btn${cat===c?' active':''}`} onClick={() => setCat(c)}>
+                {CAT_LABELS[c]}
+              </button>
+            ))}
+          </div>
+          <div className="archive-grid">
+            {filtered.map(item => (
+              <ArchiveCard key={item.id} item={item} onClick={setModal} />
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Manifesto */}
+      {tweaks.showManifesto && (
+        <div id="manifesto">
+          <div className="section-label">§ Manifesto · The Why</div>
+          <section className="manifesto-section">
+            <div className="manifesto-left">
+              <div className="manifesto-heading">What<br/>This<br/>Is</div>
+              <div className="manifesto-text">
+                A folder is just a container. But the life folder is different —
+                it's the place where you put things that matter before you
+                know why they matter. The vintage find that shaped your eye.
+                The campaign image that changed how you understood beauty.
+                The essay that made you want to make things.
+                <br/><br/>
+                This is that folder. Not a shop. Not a brand yet.
+                Something more honest than that — a record of becoming.
+              </div>
+              <div className="manifesto-pull">"Archive first.<br/>Brand later.<br/>Always."</div>
+            </div>
+            <div className="manifesto-right">
+              <div className="manifesto-heading" style={{color:'var(--parchment)'}}>The<br/>Rules</div>
+              <div className="manifesto-text">
+                I. Save what moves you, not what performs.<br/><br/>
+                II. The reference is not the thing — it's the conversation between things.<br/><br/>
+                III. Vintage is not nostalgia. It is evidence.<br/><br/>
+                IV. A brand is just a point of view, repeated with conviction.<br/><br/>
+                V. The folder stays open. The archive is never finished.
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* Writings */}
+      {tweaks.showWritings && (
+        <div id="writings">
+          <div className="section-label">§ Writing · Filed Texts</div>
+          <section className="writings-section">
+            {WRITINGS.map(w => (
+              <div key={w.id} className="writing-item">
+                <div className="writing-num">{w.num}</div>
+                <div className="writing-title">
+                  {w.title}
+                  <span>{w.sub}</span>
+                </div>
+                <div className="writing-tag">{w.tag}<br/>{w.date}</div>
+              </div>
+            ))}
+          </section>
+        </div>
+      )}
+
+      {/* About */}
+      <div id="about">
+        <section className="about-section">
+          <div className="about-label">About<br/>TLF</div>
+          <div>
+            <div className="about-heading">A Folder<br/>With a<br/>Future</div>
+          </div>
+          <div>
+            <div className="about-body">
+              TheLifeFolder started as exactly that — a folder.
+              A personal archive of references, vintage finds, pop culture
+              moments, and writings that felt too important to lose and
+              too personal to share anywhere else.
+              <br/><br/>
+              It is becoming a fashion brand. Not because fashion needs
+              another brand, but because this archive has a point of view
+              that deserves garments. The reference comes first.
+              The collection follows.
+              <br/><br/>
+              Currently: building. Eventually: dropping.
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* Footer */}
+      <footer>
+        <div>
+          <div className="footer-brand">
+            <img src={logoSrc} alt="TLF" />
+            <span className="footer-brand-name">TLF</span>
+          </div>
+          <div className="footer-tagline">{tweaks.tagline}</div>
+        </div>
+        <ul className="footer-links">
+          <li><a href="#archive">Archive</a></li>
+          <li><a href="#manifesto">Manifesto</a></li>
+          <li><a href="#writings">Writing</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+        <div className="footer-copy">
+          © 2025 TheLifeFolder<br/>
+          All rights filed.<br/>
+          Est. 2024
+        </div>
+      </footer>
+
+      {/* Modal */}
+      <Modal item={modal} onClose={() => setModal(null)} />
+
+      {/* Tweaks */}
+      <TweaksPanel>
+        <TweakSection label="Visual">
+          <TweakColor id="accentColor" label="Accent Color" />
+          <TweakSlider id="heroSize" label="Hero Text Size" min={60} max={180} step={4} />
+        </TweakSection>
+        <TweakSection label="Content">
+          <TweakToggle id="showManifesto" label="Show Manifesto" />
+          <TweakToggle id="showWritings" label="Show Writings" />
+          <TweakText id="tagline" label="Tagline" />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
