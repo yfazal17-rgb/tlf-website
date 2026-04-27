@@ -1,0 +1,53 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "archive"
+    label: "Archive Grid"
+    folder: "_archive"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "cat", widget: "select", options: [
+          { label: "All", value: "all" },
+          { label: "Vintage", value: "vintage" },
+          { label: "Mood Boards", value: "moodboard" },
+          { label: "Writing", value: "writing" },
+          { label: "Pop Culture", value: "popculture" }
+        ]}
+      - { label: "Tag", name: "tag", widget: "string", hint: "e.g. Pop Culture, Archival Ref, Vintage Find" }
+      - { label: "Image", name: "image", widget: "image" }
+      - { label: "Instagram Link", name: "iglink", widget: "string", required: false, hint: "Paste the Instagram post URL here" }
+      - { label: "Description", name: "desc", widget: "text" }
+      - { label: "Era", name: "era", widget: "string", hint: "e.g. 2024, 1990s" }
+      - { label: "Medium", name: "medium", widget: "string", hint: "e.g. Reference, Essay, Research" }
+
+  - name: "writings"
+    label: "Essays / Writing"
+    folder: "_writings"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Number", name: "num", widget: "string", hint: "e.g. 001, 002" }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Subtitle", name: "sub", widget: "string" }
+      - { label: "Tag", name: "tag", widget: "string", hint: "e.g. Essay, Manifesto, Notes" }
+      - { label: "Date", name: "date", widget: "string", hint: "e.g. Dec 2025" }
+      - { label: "Substack Link", name: "link", widget: "string", required: false }
+
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "General"
+        name: "general"
+        file: "_data/settings.json"
+        fields:
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Accent Color", name: "accentColor", widget: "color" }
+          - { label: "Show Manifesto", name: "showManifesto", widget: "boolean", default: true }
+          - { label: "Show Writings", name: "showWritings", widget: "boolean", default: true }
