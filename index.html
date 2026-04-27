@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,7 +42,6 @@
 
   ::selection { background: var(--gold); color: var(--parchment); }
 
-  /* Ticker */
   .ticker-wrap {
     background: var(--gold);
     color: var(--parchment);
@@ -64,17 +63,12 @@
     padding: 0 40px;
     opacity: 0.85;
   }
-  .ticker-track span.dot {
-    color: var(--parchment);
-    padding: 0;
-    opacity: 0.5;
-  }
+  .ticker-track span.dot { color: var(--parchment); padding: 0; opacity: 0.5; }
   @keyframes ticker {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
 
-  /* Nav */
   nav {
     position: sticky;
     top: 0;
@@ -87,12 +81,7 @@
     align-items: center;
     justify-content: space-between;
   }
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
   .nav-logo img { width: 28px; height: 28px; image-rendering: pixelated; }
   .nav-wordmark {
     font-family: var(--mono);
@@ -101,11 +90,7 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
   }
-  .nav-links {
-    display: flex;
-    gap: 32px;
-    list-style: none;
-  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
   .nav-links a {
     font-family: var(--mono);
     font-size: 10px;
@@ -118,7 +103,6 @@
   }
   .nav-links a:hover { opacity: 1; }
 
-  /* Hero */
   .hero {
     padding: 80px 32px 60px;
     border-bottom: 1px solid var(--border);
@@ -127,7 +111,6 @@
     gap: 40px;
     align-items: end;
   }
-  .hero-left {}
   .hero-eyebrow {
     font-family: var(--mono);
     font-size: 10px;
@@ -146,11 +129,7 @@
     color: var(--ink);
     margin-bottom: 32px;
   }
-  .hero-title em {
-    font-style: italic;
-    color: var(--gold);
-    font-weight: 300;
-  }
+  .hero-title em { font-style: italic; color: var(--gold); font-weight: 300; }
   .hero-sub {
     font-family: var(--serif);
     font-size: 18px;
@@ -160,12 +139,7 @@
     line-height: 1.6;
     max-width: 520px;
   }
-  .hero-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 20px;
-  }
+  .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
   .hero-logo-wrap {
     position: relative;
     width: 200px;
@@ -198,7 +172,6 @@
     line-height: 1;
   }
 
-  /* Section Label */
   .section-label {
     font-family: var(--mono);
     font-size: 9px;
@@ -211,16 +184,9 @@
     align-items: center;
     gap: 16px;
   }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* Archive */
   .archive-section { padding: 0 32px 80px; }
-
   .filter-bar {
     display: flex;
     gap: 0;
@@ -245,11 +211,7 @@
   .filter-btn:hover { background: var(--parchment-dark); color: var(--ink); }
   .filter-btn.active { background: var(--gold); color: var(--parchment); }
 
-  .archive-grid {
-    columns: 4;
-    column-gap: 1px;
-    gap: 1px;
-  }
+  .archive-grid { columns: 4; column-gap: 1px; gap: 1px; }
   .archive-item {
     break-inside: avoid;
     margin-bottom: 1px;
@@ -258,19 +220,17 @@
     overflow: hidden;
     background: var(--parchment-dark);
   }
-
-  .archive-item:hover .item-overlay { opacity: 1; }
-  .archive-item:hover .placeholder-inner { transform: scale(1.03); }
-
-  .placeholder-inner {
+  .archive-item img {
     width: 100%;
-    transition: transform 0.4s ease;
     display: block;
+    transition: transform 0.4s ease;
   }
+  .archive-item:hover img { transform: scale(1.03); }
+  .archive-item:hover .item-overlay { opacity: 1; }
   .item-overlay {
     position: absolute;
     inset: 0;
-    background: oklch(10% 0.04 148);
+    background: oklch(10% 0.04 148 / 0.85);
     opacity: 0;
     transition: opacity 0.25s;
     display: flex;
@@ -296,7 +256,6 @@
     margin-top: 6px;
   }
 
-  /* Modal */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -315,10 +274,7 @@
     flex-direction: column;
     animation: slideIn 0.3s ease;
   }
-  @keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-  }
+  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
   .modal-header {
     padding: 24px 32px;
     border-bottom: 1px solid var(--border);
@@ -344,14 +300,7 @@
   }
   .modal-close:hover { background: var(--gold); color: var(--parchment); border-color: var(--gold); }
   .modal-body { padding: 40px 32px; flex: 1; }
-  .modal-placeholder {
-    width: 100%;
-    background: var(--parchment-dark);
-    margin-bottom: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .modal-img { width: 100%; display: block; margin-bottom: 32px; }
   .modal-title {
     font-family: var(--cond);
     font-size: 42px;
@@ -369,11 +318,7 @@
     text-transform: uppercase;
     margin-bottom: 24px;
   }
-  .modal-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 24px 0;
-  }
+  .modal-divider { height: 1px; background: var(--border); margin: 24px 0; }
   .modal-desc {
     font-family: var(--serif);
     font-size: 17px;
@@ -381,13 +326,7 @@
     line-height: 1.75;
     color: var(--ink-mid);
   }
-  .modal-meta {
-    margin-top: 32px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  .modal-meta-item { }
+  .modal-meta { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .modal-meta-label {
     font-family: var(--mono);
     font-size: 8px;
@@ -396,28 +335,25 @@
     color: var(--ink-light);
     margin-bottom: 4px;
   }
-  .modal-meta-val {
-    font-family: var(--cond);
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--ink);
-  }
-
-  /* Manifesto */
-  .manifesto-section {
-    border-top: 1px solid var(--border);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  .manifesto-left {
-    padding: 80px 32px;
-    border-right: 1px solid var(--border);
-  }
-  .manifesto-right {
-    padding: 80px 32px;
-    background: var(--gold);
+  .modal-meta-val { font-family: var(--cond); font-size: 16px; font-weight: 500; color: var(--ink); }
+  .modal-ig-btn {
+    display: inline-block;
+    margin-top: 32px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: var(--parchment);
+    background: var(--gold);
+    padding: 10px 24px;
+    text-decoration: none;
+    transition: background 0.15s;
   }
+  .modal-ig-btn:hover { background: var(--gold-dark); }
+
+  .manifesto-section { border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; }
+  .manifesto-left { padding: 80px 32px; border-right: 1px solid var(--border); }
+  .manifesto-right { padding: 80px 32px; background: var(--gold); color: var(--parchment); }
   .manifesto-heading {
     font-family: var(--cond);
     font-size: 72px;
@@ -427,16 +363,9 @@
     line-height: 0.9;
     margin-bottom: 40px;
   }
-  .manifesto-text {
-    font-family: var(--serif);
-    font-size: 17px;
-    font-weight: 300;
-    line-height: 1.85;
-    color: var(--ink-mid);
-  }
+  .manifesto-text { font-family: var(--serif); font-size: 17px; font-weight: 300; line-height: 1.85; color: var(--ink-mid); }
   .manifesto-right .manifesto-text { color: oklch(20% 0.04 148); }
   .manifesto-right .manifesto-heading { color: oklch(14% 0.04 148); }
-
   .manifesto-pull {
     font-family: var(--cond);
     font-size: 32px;
@@ -447,7 +376,6 @@
     margin: 40px 0 0;
   }
 
-  /* About */
   .about-section {
     border-top: 1px solid var(--border);
     padding: 80px 32px;
@@ -456,35 +384,11 @@
     gap: 60px;
     align-items: start;
   }
-  .about-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    padding-top: 6px;
-  }
-  .about-heading {
-    font-family: var(--cond);
-    font-size: 52px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
-    line-height: 0.95;
-    margin-bottom: 28px;
-  }
-  .about-body {
-    font-family: var(--serif);
-    font-size: 17px;
-    font-weight: 300;
-    line-height: 1.8;
-    color: var(--ink-mid);
-  }
+  .about-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-light); padding-top: 6px; }
+  .about-heading { font-family: var(--cond); font-size: 52px; font-weight: 600; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.95; margin-bottom: 28px; }
+  .about-body { font-family: var(--serif); font-size: 17px; font-weight: 300; line-height: 1.8; color: var(--ink-mid); }
 
-  /* Writings strip */
-  .writings-section {
-    border-top: 1px solid var(--border);
-  }
+  .writings-section { border-top: 1px solid var(--border); }
   .writing-item {
     display: grid;
     grid-template-columns: 80px 1fr 160px;
@@ -494,43 +398,15 @@
     cursor: pointer;
     transition: background 0.15s;
     gap: 32px;
+    text-decoration: none;
+    color: inherit;
   }
   .writing-item:hover { background: var(--parchment-dark); }
+  .writing-num { font-family: var(--mono); font-size: 11px; color: var(--ink-light); letter-spacing: 0.1em; }
+  .writing-title { font-family: var(--cond); font-size: 22px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
+  .writing-title span { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 16px; display: block; color: var(--ink-mid); text-transform: none; margin-top: 2px; letter-spacing: 0; }
+  .writing-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); text-align: right; }
 
-  .writing-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-light);
-    letter-spacing: 0.1em;
-  }
-  .writing-title {
-    font-family: var(--cond);
-    font-size: 22px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .writing-title span {
-    font-family: var(--serif);
-    font-style: italic;
-    font-weight: 300;
-    font-size: 16px;
-    display: block;
-    color: var(--ink-mid);
-    text-transform: none;
-    margin-top: 2px;
-    letter-spacing: 0;
-  }
-  .writing-tag {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
-    text-align: right;
-  }
-
-  /* Footer */
   footer {
     border-top: 1px solid var(--border);
     background: oklch(12% 0.042 148);
@@ -541,136 +417,137 @@
     gap: 40px;
     align-items: end;
   }
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
+  .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
   .footer-brand img { width: 36px; height: 36px; image-rendering: pixelated; opacity: 0.9; }
-  .footer-brand-name {
-    font-family: var(--cond);
-    font-size: 24px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .footer-tagline {
-    font-family: var(--serif);
-    font-size: 14px;
-    font-style: italic;
-    color: var(--ink-mid);
-    line-height: 1.6;
-  }
-  .footer-links {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .footer-links a {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
+  .footer-brand-name { font-family: var(--cond); font-size: 24px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .footer-tagline { font-family: var(--serif); font-size: 14px; font-style: italic; color: var(--ink-mid); line-height: 1.6; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-links a { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-light); text-decoration: none; transition: color 0.15s; }
   .footer-links a:hover { color: var(--gold); }
-  .footer-copy {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--ink-light);
-    text-align: right;
-    letter-spacing: 0.1em;
-    line-height: 1.8;
-  }
+  .footer-copy { font-family: var(--mono); font-size: 9px; color: var(--ink-light); text-align: right; letter-spacing: 0.1em; line-height: 1.8; }
 
-  /* Stripe placeholders */
-  .stripe-ph {
-    width: 100%;
-    background: repeating-linear-gradient(
-      45deg,
-      oklch(23% 0.055 148),
-      oklch(23% 0.055 148) 2px,
-      transparent 2px,
-      transparent 12px
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .stripe-ph-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    background: var(--parchment-dark);
-    padding: 4px 10px;
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { align-items: flex-start; }
+    .archive-grid { columns: 2; }
+    .manifesto-section { grid-template-columns: 1fr; }
+    .about-section { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; }
+    .writing-item { grid-template-columns: 60px 1fr; }
+    .writing-tag { display: none; }
   }
 </style>
 </head>
 <body>
-
 <div id="root"></div>
 
-<script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel">
 
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accentColor": "#b5863a",
-  "heroSize": 120,
-  "showWritings": true,
-  "showManifesto": true,
-  "tagline": "everything that matters, filed."
-}/*EDITMODE-END*/;
-
-// ── Data ─────────────────────────────────────────────────────────────
 const ARCHIVE_ITEMS = [
-  { id:1, title:"Margiela SS00", tag:"Vintage Find", cat:"vintage", desc:"The iconic flat shoes, tabis, deconstructed blazers. A season that redefined what fashion could be — anti-spectacle as spectacle.", era:"2000", medium:"Research", h:300 },
-  { id:2, title:"The Folder Grows", tag:"Mood Board", cat:"moodboard", desc:"A collection of images around the metaphor of growth inside constraint — folders, archives, pressure, bloom.", era:"2024", medium:"Digital", h:220 },
-  { id:3, title:"YSL Le Smoking", tag:"Archival Ref", cat:"vintage", desc:"1966. A tuxedo suit for a woman. The moment fashion became a political act.", era:"1966", medium:"Reference", h:260 },
-  { id:4, title:"On Dressing With Intent", tag:"Writing", cat:"writing", desc:"A short essay on why what you wear is the first thing you publish every day.", era:"2025", medium:"Essay", h:180 },
-  { id:5, title:"Ralph in Colorado", tag:"Pop Culture", cat:"popculture", desc:"The lifestyle myth made tangible. Ranch, denim, horses, a kind of American dream that never existed but always felt real.", era:"1990s", medium:"Reference", h:280 },
-  { id:6, title:"Nude Project Lookbook", tag:"Reference", cat:"moodboard", desc:"How a brand built on sincerity became the cleanest streetwear story in Europe.", era:"2023", medium:"Lookbook", h:200 },
-  { id:7, title:"JW Anderson S/S 2024", tag:"Archival Ref", cat:"vintage", desc:"Garments that ask questions before you ask them. The trompe l'oeil logic of desire.", era:"2024", medium:"Research", h:240 },
-  { id:8, title:"The Archive as Identity", tag:"Manifesto Note", cat:"writing", desc:"Everything you save says something about who you're becoming. This folder is not nostalgia — it's a map.", era:"2025", medium:"Notes", h:200 },
-  { id:9, title:"Downtown, Late 90s", tag:"Pop Culture", cat:"popculture", desc:"Before the algorithm. When wearing something obscure was its own currency.", era:"1998", medium:"Reference", h:320 },
-  { id:10, title:"Fabric Studies No.1", tag:"Material", cat:"moodboard", desc:"Raw linen, stonewashed denim, aged leather — textures that carry history.", era:"2025", medium:"Physical", h:220 },
-  { id:11, title:"Helmut Lang FW98", tag:"Vintage Find", cat:"vintage", desc:"Bondage straps on suiting. The moment utilitarian became luxury.", era:"1998", medium:"Research", h:260 },
-  { id:12, title:"Notes on Color", tag:"Writing", cat:"writing", desc:"Why I keep returning to the same palette — ink, sand, the color of old paper.", era:"2025", medium:"Essay", h:180 },
+  {
+    id: 1,
+    title: "Raining So Hard It Hurts",
+    tag: "Pop Culture",
+    cat: "popculture",
+    desc: "Comic panel. Rain and red capes. The kind of image that hits before you know why.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/comic-rain.jpg",
+    iglink: "https://www.instagram.com/p/DXmLBOriMHl/"
+  },
+  {
+    id: 2,
+    title: "Make Your Own Money",
+    tag: "Archive",
+    cat: "vintage",
+    desc: "A mug with a manifesto. Make your own money and marry someone funny.",
+    era: "2024",
+    medium: "Found Object",
+    image: "images/coffee-mug.jpg",
+    iglink: "https://www.instagram.com/p/DXmZD74EvjT/"
+  },
+  {
+    id: 3,
+    title: "Through The Trees",
+    tag: "Pop Culture",
+    cat: "popculture",
+    desc: "Golden hour in a forest. A rider disappearing into the light.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/forest-horse.jpg",
+    iglink: ""
+  },
+  {
+    id: 4,
+    title: "Still Standing",
+    tag: "Pop Culture",
+    cat: "popculture",
+    desc: "Rain-soaked. Beaten. Not done. The image says everything the caption doesn't need to.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/captain-america.jpg",
+    iglink: ""
+  },
+  {
+    id: 5,
+    title: "Only Star Left",
+    tag: "Pop Culture",
+    cat: "popculture",
+    desc: "A figure alone in the dark on a single spotlight. Everything else is void.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/figure-darkness.jpg",
+    iglink: ""
+  },
+  {
+    id: 6,
+    title: "Potato Salad",
+    tag: "Pop Culture",
+    cat: "popculture",
+    desc: "ASAP Rocky and Tyler the Creator. Paris. A rainbow. Maximum style, zero effort.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/potato-salad.jpg",
+    iglink: "https://www.instagram.com/p/DXmZD74EvjT/"
+  },
+  {
+    id: 7,
+    title: "To Charles",
+    tag: "Archive",
+    cat: "vintage",
+    desc: "Schumacher's handwritten note on Leclerc's helmet. Whatever you do, be happy and smile.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/schumacher-helmet.jpg",
+    iglink: ""
+  },
+  {
+    id: 8,
+    title: "Red Sky",
+    tag: "Pop Culture",
+    cat: "popculture",
+    desc: "Blonde. Masked. Gun to the head. Crimson background. Total composure.",
+    era: "2024",
+    medium: "Reference",
+    image: "images/comic-gun.jpg",
+    iglink: ""
+  },
 ];
 
 const WRITINGS = [
-  { id:1, num:"001", title:"On Dressing With Intent", sub:"The first publication happens before you leave the house", tag:"Essay", date:"Mar 2025" },
-  { id:2, num:"002", title:"The Archive as Identity", sub:"Everything you save says something about who you're becoming", tag:"Manifesto", date:"Jan 2025" },
-  { id:3, num:"003", title:"Notes on Color", sub:"Why I keep returning to the same palette", tag:"Notes", date:"Apr 2025" },
-  { id:4, num:"004", title:"Why Margiela Still Matters", sub:"Anti-fashion as the purest form of fashion", tag:"Essay", date:"Dec 2024" },
+  { id:1, num:"001", title:"Be Delusional, So You Can Be Great", sub:"On manufacturing belief before you have proof", tag:"Essay", date:"Dec 2025", link:"https://thelifefolder.substack.com" },
+  { id:2, num:"002", title:"This Is The Life Folder", sub:"What it is, what it's becoming, why it matters", tag:"Essay", date:"Dec 19, 2025", link:"https://thelifefolder.substack.com" },
 ];
 
 const CATS = ["all","vintage","moodboard","writing","popculture"];
 const CAT_LABELS = { all:"All", vintage:"Vintage", moodboard:"Mood Boards", writing:"Writing", popculture:"Pop Culture" };
 
-// ── Placeholder ───────────────────────────────────────────────────────
-function Ph({ height, label }) {
-  return (
-    <div className="stripe-ph" style={{ height }}>
-      <span className="stripe-ph-label">{label}</span>
-    </div>
-  );
-}
+const logoSrc = 'uploads/images_upload-1777114486858.png';
 
-// ── Archive Item ──────────────────────────────────────────────────────
 function ArchiveCard({ item, onClick }) {
   return (
     <div className="archive-item" onClick={() => onClick(item)}>
-      <div className="placeholder-inner">
-        <Ph height={item.h} label={item.tag} />
-      </div>
+      <img src={item.image} alt={item.title} loading="lazy" />
       <div className="item-overlay">
         <div className="item-overlay-title">{item.title}</div>
         <div className="item-overlay-tag">{item.tag} · {item.era}</div>
@@ -679,7 +556,6 @@ function ArchiveCard({ item, onClick }) {
   );
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────
 function Modal({ item, onClose }) {
   if (!item) return null;
   React.useEffect(() => {
@@ -687,6 +563,7 @@ function Modal({ item, onClose }) {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-drawer" onClick={e => e.stopPropagation()}>
@@ -697,52 +574,45 @@ function Modal({ item, onClose }) {
           <button className="modal-close" onClick={onClose}>Close ✕</button>
         </div>
         <div className="modal-body">
-          <div className="modal-placeholder" style={{ height: 340 }}>
-            <Ph height={340} label={item.tag} />
-          </div>
+          <img className="modal-img" src={item.image} alt={item.title} />
           <div className="modal-tag">{item.tag}</div>
           <div className="modal-title">{item.title}</div>
           <div className="modal-divider"></div>
           <div className="modal-desc">{item.desc}</div>
           <div className="modal-meta">
-            <div className="modal-meta-item">
+            <div>
               <div className="modal-meta-label">Era</div>
               <div className="modal-meta-val">{item.era}</div>
             </div>
-            <div className="modal-meta-item">
+            <div>
               <div className="modal-meta-label">Medium</div>
               <div className="modal-meta-val">{item.medium}</div>
             </div>
-            <div className="modal-meta-item">
+            <div>
               <div className="modal-meta-label">Category</div>
               <div className="modal-meta-val" style={{textTransform:'capitalize'}}>{CAT_LABELS[item.cat]}</div>
             </div>
-            <div className="modal-meta-item">
+            <div>
               <div className="modal-meta-label">Filed by</div>
               <div className="modal-meta-val">TLF</div>
             </div>
           </div>
+          {item.iglink && (
+            <a className="modal-ig-btn" href={item.iglink} target="_blank" rel="noopener noreferrer">
+              View on Instagram ↗
+            </a>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// ── App ───────────────────────────────────────────────────────────────
 function App() {
-  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [cat, setCat] = React.useState('all');
   const [modal, setModal] = React.useState(null);
 
   const filtered = cat === 'all' ? ARCHIVE_ITEMS : ARCHIVE_ITEMS.filter(i => i.cat === cat);
-
-  // Apply dynamic tweaks
-  React.useEffect(() => {
-    document.documentElement.style.setProperty('--gold', tweaks.accentColor);
-    document.documentElement.style.setProperty('--gold-dark', tweaks.accentColor);
-  }, [tweaks.accentColor]);
-
-  const logoSrc = 'uploads/images_upload-1777114486858.png';
 
   const TICKER_ITEMS = ['TheLifeFolder','✦','Archive','✦','Est. 2024','✦','Everything That Matters, Filed','✦','Vintage','✦','Culture','✦','Craft','✦'];
   const tickerContent = [...TICKER_ITEMS,...TICKER_ITEMS].map((t,i) =>
@@ -751,12 +621,10 @@ function App() {
 
   return (
     <>
-      {/* Ticker */}
       <div className="ticker-wrap">
         <div className="ticker-track">{tickerContent}</div>
       </div>
 
-      {/* Nav */}
       <nav>
         <div className="nav-logo" onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
           <img src={logoSrc} alt="TLF" />
@@ -770,14 +638,13 @@ function App() {
         </ul>
       </nav>
 
-      {/* Hero */}
       <section className="hero" id="top">
         <div className="hero-left">
           <div className="hero-eyebrow">Est. 2024 · Personal Archive · Becoming a Brand</div>
-          <h1 className="hero-title" style={{fontSize: tweaks.heroSize}}>
+          <h1 className="hero-title">
             The<br/><em>Life</em><br/>Folder
           </h1>
-          <p className="hero-sub">{tweaks.tagline}</p>
+          <p className="hero-sub">everything that matters, filed.</p>
         </div>
         <div className="hero-right">
           <div className="hero-logo-wrap">
@@ -793,7 +660,6 @@ function App() {
         </div>
       </section>
 
-      {/* Archive */}
       <div id="archive">
         <div className="section-label">§ Archive · Browse the Folder</div>
         <section className="archive-section">
@@ -812,59 +678,52 @@ function App() {
         </section>
       </div>
 
-      {/* Manifesto */}
-      {tweaks.showManifesto && (
-        <div id="manifesto">
-          <div className="section-label">§ Manifesto · The Why</div>
-          <section className="manifesto-section">
-            <div className="manifesto-left">
-              <div className="manifesto-heading">What<br/>This<br/>Is</div>
-              <div className="manifesto-text">
-                A folder is just a container. But the life folder is different —
-                it's the place where you put things that matter before you
-                know why they matter. The vintage find that shaped your eye.
-                The campaign image that changed how you understood beauty.
-                The essay that made you want to make things.
-                <br/><br/>
-                This is that folder. Not a shop. Not a brand yet.
-                Something more honest than that — a record of becoming.
-              </div>
-              <div className="manifesto-pull">"Archive first.<br/>Brand later.<br/>Always."</div>
+      <div id="manifesto">
+        <div className="section-label">§ Manifesto · The Why</div>
+        <section className="manifesto-section">
+          <div className="manifesto-left">
+            <div className="manifesto-heading">What<br/>This<br/>Is</div>
+            <div className="manifesto-text">
+              A folder is just a container. But the life folder is different —
+              it's the place where you put things that matter before you
+              know why they matter. The vintage find that shaped your eye.
+              The campaign image that changed how you understood beauty.
+              The essay that made you want to make things.
+              <br/><br/>
+              This is that folder. Not a shop. Not a brand yet.
+              Something more honest than that — a record of becoming.
             </div>
-            <div className="manifesto-right">
-              <div className="manifesto-heading" style={{color:'var(--parchment)'}}>The<br/>Rules</div>
-              <div className="manifesto-text">
-                I. Save what moves you, not what performs.<br/><br/>
-                II. The reference is not the thing — it's the conversation between things.<br/><br/>
-                III. Vintage is not nostalgia. It is evidence.<br/><br/>
-                IV. A brand is just a point of view, repeated with conviction.<br/><br/>
-                V. The folder stays open. The archive is never finished.
-              </div>
+            <div className="manifesto-pull">"Archive first.<br/>Brand later.<br/>Always."</div>
+          </div>
+          <div className="manifesto-right">
+            <div className="manifesto-heading" style={{color:'oklch(14% 0.04 148)'}}>The<br/>Rules</div>
+            <div className="manifesto-text">
+              I. Save what moves you, not what performs.<br/><br/>
+              II. The reference is not the thing — it's the conversation between things.<br/><br/>
+              III. Vintage is not nostalgia. It is evidence.<br/><br/>
+              IV. A brand is just a point of view, repeated with conviction.<br/><br/>
+              V. The folder stays open. The archive is never finished.
             </div>
-          </section>
-        </div>
-      )}
+          </div>
+        </section>
+      </div>
 
-      {/* Writings */}
-      {tweaks.showWritings && (
-        <div id="writings">
-          <div className="section-label">§ Writing · Filed Texts</div>
-          <section className="writings-section">
-            {WRITINGS.map(w => (
-              <div key={w.id} className="writing-item">
-                <div className="writing-num">{w.num}</div>
-                <div className="writing-title">
-                  {w.title}
-                  <span>{w.sub}</span>
-                </div>
-                <div className="writing-tag">{w.tag}<br/>{w.date}</div>
+      <div id="writings">
+        <div className="section-label">§ Writing · Filed Texts</div>
+        <section className="writings-section">
+          {WRITINGS.map(w => (
+            <a key={w.id} className="writing-item" href={w.link} target="_blank" rel="noopener noreferrer">
+              <div className="writing-num">{w.num}</div>
+              <div className="writing-title">
+                {w.title}
+                <span>{w.sub}</span>
               </div>
-            ))}
-          </section>
-        </div>
-      )}
+              <div className="writing-tag">{w.tag}<br/>{w.date}</div>
+            </a>
+          ))}
+        </section>
+      </div>
 
-      {/* About */}
       <div id="about">
         <section className="about-section">
           <div className="about-label">About<br/>TLF</div>
@@ -889,14 +748,13 @@ function App() {
         </section>
       </div>
 
-      {/* Footer */}
       <footer>
         <div>
           <div className="footer-brand">
             <img src={logoSrc} alt="TLF" />
             <span className="footer-brand-name">TLF</span>
           </div>
-          <div className="footer-tagline">{tweaks.tagline}</div>
+          <div className="footer-tagline">everything that matters, filed.</div>
         </div>
         <ul className="footer-links">
           <li><a href="#archive">Archive</a></li>
@@ -911,21 +769,7 @@ function App() {
         </div>
       </footer>
 
-      {/* Modal */}
       <Modal item={modal} onClose={() => setModal(null)} />
-
-      {/* Tweaks */}
-      <TweaksPanel>
-        <TweakSection label="Visual">
-          <TweakColor id="accentColor" label="Accent Color" />
-          <TweakSlider id="heroSize" label="Hero Text Size" min={60} max={180} step={4} />
-        </TweakSection>
-        <TweakSection label="Content">
-          <TweakToggle id="showManifesto" label="Show Manifesto" />
-          <TweakToggle id="showWritings" label="Show Writings" />
-          <TweakText id="tagline" label="Tagline" />
-        </TweakSection>
-      </TweaksPanel>
     </>
   );
 }
