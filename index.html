@@ -2,791 +2,1316 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TheLifeFolder</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-
+<title>The Life Folder</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; }
+a { cursor: pointer; }
 
-  :root {
-    --parchment: oklch(17% 0.048 148);
-    --parchment-dark: oklch(21% 0.052 148);
-    --ink: oklch(96% 0.012 148);
-    --ink-mid: oklch(72% 0.025 148);
-    --ink-light: oklch(48% 0.035 148);
-    --gold: oklch(64% 0.20 145);
-    --gold-dark: oklch(52% 0.18 145);
-    --leaf: oklch(75% 0.22 142);
-    --border: oklch(26% 0.055 148);
-    --serif: 'Cormorant Garamond', Georgia, serif;
-    --mono: 'Space Mono', monospace;
-    --cond: 'Barlow Condensed', sans-serif;
-  }
+/* ===== DESKTOP ===== */
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: Tahoma, Arial, sans-serif;
+}
 
-  html { scroll-behavior: smooth; }
+#desktop {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  bottom: 40px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 130% 55% at 50% 108%, #2e7a0f 0%, #4aaa1a 25%, #78c830 45%, transparent 62%),
+    linear-gradient(180deg,
+      #3a78c8 0%, #5090e0 28%,
+      #78b4f0 48%, #b0d8f8 58%,
+      #d8eea0 65%, #a0d840 72%,
+      #5ab828 82%, #3a9018 100%
+    );
+  background-size: cover;
+  background-attachment: fixed;
+  user-select: none;
+}
 
-  body {
-    background: var(--parchment);
-    color: var(--ink);
-    font-family: var(--serif);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ===== ICONS ===== */
+.icon {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center;
+  width: 82px; padding: 4px 2px;
+  cursor: default;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.icon:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.35); }
+.icon.selected { background: rgba(49,106,197,0.55); border-color: rgba(49,106,197,0.85); }
+.icon-img { font-size: 40px; line-height: 1; margin-bottom: 3px; filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.5)); }
+.icon-label {
+  font-size: 11px; color: white; text-align: center; line-height: 1.25; word-break: break-word;
+  text-shadow: 1px 1px 3px rgba(0,0,0,1), -1px -1px 2px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.9);
+}
 
-  ::selection { background: var(--gold); color: var(--parchment); }
+/* ===== WINDOWS ===== */
+.window {
+  position: absolute;
+  min-width: 280px; min-height: 180px;
+  background: #ECE9D8;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.45);
+  display: none; flex-direction: column;
+}
 
-  .ticker-wrap {
-    background: var(--gold);
-    color: var(--parchment);
-    overflow: hidden;
-    height: 32px;
-    display: flex;
-    align-items: center;
-  }
-  .ticker-track {
-    display: flex;
-    gap: 0;
-    animation: ticker 28s linear infinite;
-    white-space: nowrap;
-  }
-  .ticker-track span {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    padding: 0 40px;
-    opacity: 0.85;
-  }
-  .ticker-track span.dot { color: var(--parchment); padding: 0; opacity: 0.5; }
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+/* Title bar */
+.title-bar {
+  display: flex; align-items: center;
+  padding: 0 3px; height: 28px;
+  background: linear-gradient(180deg, #e8820c 0%, #c85e00 52%, #a04800 100%);
+  cursor: default; gap: 4px; flex-shrink: 0;
+  position: relative;
+}
+.title-bar::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: rgba(255,180,60,0.4);
+}
+.window.inactive .title-bar {
+  background: linear-gradient(180deg, #b09060 0%, #907040 100%);
+}
+.title-icon { font-size: 14px; flex-shrink: 0; line-height: 1; }
+.title-text {
+  flex: 1; font-size: 11px; font-weight: bold; color: white;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.55);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.title-controls { display: flex; gap: 2px; flex-shrink: 0; }
+.title-btn {
+  width: 21px; height: 21px;
+  font-size: 11px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #e8a060 0%, #c07030 100%);
+  color: white; border: 1px solid rgba(255,255,255,0.35);
+  flex-shrink: 0; line-height: 1;
+}
+.title-btn:hover { background: linear-gradient(180deg, #f8b870 0%, #d08040 100%); }
+.btn-close:hover { background: linear-gradient(180deg, #e03020 0%, #b01808 100%) !important; }
+.title-btn:active { background: linear-gradient(180deg, #a86028 0%, #885020 100%); }
 
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--parchment);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-  .nav-logo img { width: 28px; height: 28px; image-rendering: pixelated; }
-  .nav-wordmark {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink);
-    text-decoration: none;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-  }
-  .nav-links a:hover { opacity: 1; }
+/* Window body */
+.window-body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 14px 16px;
+  background: #ECE9D8;
+}
+.window-body::-webkit-scrollbar { width: 17px; }
+.window-body::-webkit-scrollbar-track { background: #d4d0c8; border: 1px solid #b0aca0; }
+.window-body::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #c0b8a8, #a0988a); border: 2px outset #c8c0b0; }
 
-  .hero {
-    padding: 80px 32px 60px;
-    border-bottom: 1px solid var(--border);
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 40px;
-    align-items: end;
-  }
-  .hero-eyebrow {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    margin-bottom: 24px;
-  }
-  .hero-title {
-    font-family: var(--cond);
-    font-size: clamp(72px, 11vw, 160px);
-    font-weight: 600;
-    line-height: 0.92;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    color: var(--ink);
-    margin-bottom: 32px;
-  }
-  .hero-title em { font-style: italic; color: var(--gold); font-weight: 300; }
-  .hero-sub {
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--ink-mid);
-    line-height: 1.6;
-    max-width: 520px;
-  }
-  .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
-  .hero-logo-wrap {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .hero-logo-wrap img {
-    width: 160px;
-    height: 160px;
-    image-rendering: pixelated;
-    filter: drop-shadow(4px 6px 0px var(--gold));
-  }
-  .hero-index {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink-light);
-    letter-spacing: 0.1em;
-    text-align: right;
-    line-height: 1.8;
-  }
-  .hero-index strong {
-    color: var(--ink);
-    display: block;
-    font-size: 22px;
-    font-family: var(--cond);
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 1;
-  }
+/* ===== NOTEPAD ===== */
+.notepad-menubar {
+  display: flex; background: #ECE9D8;
+  border-bottom: 1px solid #a8a098;
+  padding: 1px 3px; flex-shrink: 0;
+}
+.notepad-menubar button {
+  background: none; border: none;
+  font-size: 11px; font-family: Tahoma, Arial, sans-serif;
+  padding: 3px 10px; color: #000;
+}
+.notepad-menubar button:hover { background: #316ac5; color: white; }
+.notepad-content {
+  flex: 1; overflow: auto;
+  background: white; padding: 6px 8px;
+  border: 2px inset #a0a0a0; margin: 0;
+}
+.notepad-content pre {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px; line-height: 1.65; white-space: pre-wrap; color: #000;
+}
 
-  .section-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    padding: 12px 32px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+/* ===== WINDOW CONTENT ===== */
+.win-header {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 15px; font-weight: bold; color: #c85e00;
+  margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.win-status {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px; color: #777; margin-bottom: 12px; letter-spacing: 0.1em;
+}
+.win-body {
+  font-size: 12px; line-height: 1.75; color: #2a2a2a; margin-bottom: 12px;
+  font-family: Tahoma, Arial, sans-serif;
+}
+.win-divider { border: none; border-top: 1px solid #b0a898; margin: 12px 0; }
+.win-signup-label { font-size: 11px; color: #555; margin-bottom: 7px; }
+.win-email-row { display: flex; gap: 5px; align-items: center; }
+.win-email-input {
+  flex: 1; height: 24px;
+  border: 2px inset #a0a098; padding: 0 6px;
+  font-size: 12px; font-family: Tahoma, Arial, sans-serif;
+  background: white; color: #000;
+}
+.win-email-btn {
+  height: 24px; padding: 0 14px;
+  font-size: 11px; font-family: Tahoma, Arial, sans-serif;
+  border: 2px outset #c8c4b8; background: #d4d0c8; color: #000;
+}
+.win-email-btn:hover { background: #e0dcd0; }
+.win-email-btn:active { border-style: inset; }
+.win-confirm {
+  font-size: 12px; color: #006800; margin-top: 8px;
+  font-family: 'Courier New', Courier, monospace;
+  display: none;
+}
 
-  .archive-section { padding: 0 32px 80px; }
-  .filter-bar {
-    display: flex;
-    gap: 0;
-    margin: 28px 0 36px;
-    border: 1px solid var(--border);
-    width: fit-content;
-  }
-  .filter-btn {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    border: none;
-    border-right: 1px solid var(--border);
-    background: transparent;
-    color: var(--ink-light);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .filter-btn:last-child { border-right: none; }
-  .filter-btn:hover { background: var(--parchment-dark); color: var(--ink); }
-  .filter-btn.active { background: var(--gold); color: var(--parchment); }
+/* Progress bar */
+.progress-wrap { margin: 10px 0 6px; }
+.progress-label { font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #555; margin-bottom: 4px; }
+.progress-track { height: 18px; background: #c4c0b8; border: 2px inset #a0a098; overflow: hidden; }
+.progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(180deg, #4a80d8 0%, #1a50b0 100%);
+  animation: progFill 4s ease-out forwards;
+}
+@keyframes progFill { from { width: 0% } to { width: 37% } }
+.progress-pct { font-family: 'Courier New', Courier, monospace; font-size: 10px; color: #666; text-align: right; margin-top: 2px; }
 
-  .archive-grid { columns: 4; column-gap: 1px; gap: 1px; }
-  .archive-item {
-    break-inside: avoid;
-    margin-bottom: 1px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    background: var(--parchment-dark);
-  }
-  .archive-item img {
-    width: 100%;
-    display: block;
-    transition: transform 0.4s ease;
-  }
-  .archive-item:hover img { transform: scale(1.03); }
-  .archive-item:hover .item-overlay { opacity: 1; }
-  .item-overlay {
-    position: absolute;
-    inset: 0;
-    background: oklch(10% 0.04 148 / 0.85);
-    opacity: 0;
-    transition: opacity 0.25s;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 20px;
-  }
-  .item-overlay-title {
-    font-family: var(--cond);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--parchment);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    line-height: 1.1;
-  }
-  .item-overlay-tag {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--gold);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 6px;
-  }
+/* Journal */
+.journal-list { list-style: none; border: 1px solid #b0a898; background: white; margin-bottom: 14px; }
+.journal-entry { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #e0d8d0; }
+.journal-entry:last-child { border-bottom: none; }
+.journal-entry:hover { background: #316ac5; }
+.journal-entry:hover a { color: white; }
+.journal-entry-icon { font-size: 14px; flex-shrink: 0; }
+.journal-entry a {
+  font-size: 12px; color: #0000cc; text-decoration: none;
+  font-family: Tahoma, Arial, sans-serif;
+}
+.journal-entry a:hover { text-decoration: underline; }
+.journal-footer { font-size: 11px; color: #666; }
+.journal-footer a { color: #0000cc; }
 
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(8,18,12,0.88);
-    z-index: 200;
-    display: flex;
-    align-items: stretch;
-    justify-content: flex-end;
-  }
-  .modal-drawer {
-    width: min(640px, 90vw);
-    background: var(--parchment);
-    height: 100vh;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    animation: slideIn 0.3s ease;
-  }
-  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-  .modal-header {
-    padding: 24px 32px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    background: var(--parchment);
-    z-index: 1;
-  }
-  .modal-close {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--ink-mid);
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .modal-close:hover { background: var(--gold); color: var(--parchment); border-color: var(--gold); }
-  .modal-body { padding: 40px 32px; flex: 1; }
-  .modal-img { width: 100%; display: block; margin-bottom: 32px; }
-  .modal-title {
-    font-family: var(--cond);
-    font-size: 42px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-  .modal-tag {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--gold);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  .modal-divider { height: 1px; background: var(--border); margin: 24px 0; }
-  .modal-desc {
-    font-family: var(--serif);
-    font-size: 17px;
-    font-weight: 300;
-    line-height: 1.75;
-    color: var(--ink-mid);
-  }
-  .modal-meta { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .modal-meta-label {
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    margin-bottom: 4px;
-  }
-  .modal-meta-val { font-family: var(--cond); font-size: 16px; font-weight: 500; color: var(--ink); }
-  .modal-ig-btn {
-    display: inline-block;
-    margin-top: 32px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--parchment);
-    background: var(--gold);
-    padding: 10px 24px;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
-  .modal-ig-btn:hover { background: var(--gold-dark); }
+/* Recycle bin */
+.recycle-list { list-style: none; border: 1px solid #b0a898; background: white; margin-bottom: 12px; }
+.recycle-item { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-bottom: 1px solid #e8e0d8; font-size: 12px; }
+.recycle-item:last-child { border-bottom: none; }
+.recycle-item:hover { background: #316ac5; }
+.recycle-item:hover .r-name { color: white; }
+.recycle-item:hover .r-note { color: rgba(255,255,255,0.75); }
+.recycle-item-icon { font-size: 14px; flex-shrink: 0; }
+.r-name { flex: 1; color: #000; font-family: Tahoma, Arial, sans-serif; }
+.r-note { font-size: 11px; color: #999; font-style: italic; }
+.recycle-footer { font-size: 11px; color: #999; font-style: italic; }
 
-  .manifesto-section { border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; }
-  .manifesto-left { padding: 80px 32px; border-right: 1px solid var(--border); }
-  .manifesto-right { padding: 80px 32px; background: var(--gold); color: var(--parchment); }
-  .manifesto-heading {
-    font-family: var(--cond);
-    font-size: 72px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    line-height: 0.9;
-    margin-bottom: 40px;
-  }
-  .manifesto-text { font-family: var(--serif); font-size: 17px; font-weight: 300; line-height: 1.85; color: var(--ink-mid); }
-  .manifesto-right .manifesto-text { color: oklch(20% 0.04 148); }
-  .manifesto-right .manifesto-heading { color: oklch(14% 0.04 148); }
-  .manifesto-pull {
-    font-family: var(--cond);
-    font-size: 32px;
-    font-weight: 500;
-    font-style: italic;
-    line-height: 1.2;
-    color: var(--leaf);
-    margin: 40px 0 0;
-  }
+/* About links */
+.about-links { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.about-links a { font-size: 12px; color: #0000cc; text-decoration: none; }
+.about-links a:hover { text-decoration: underline; }
 
-  .about-section {
-    border-top: 1px solid var(--border);
-    padding: 80px 32px;
-    display: grid;
-    grid-template-columns: 200px 1fr 1fr;
-    gap: 60px;
-    align-items: start;
-  }
-  .about-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-light); padding-top: 6px; }
-  .about-heading { font-family: var(--cond); font-size: 52px; font-weight: 600; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.95; margin-bottom: 28px; }
-  .about-body { font-family: var(--serif); font-size: 17px; font-weight: 300; line-height: 1.8; color: var(--ink-mid); }
+/* Welcome */
+.welcome-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 6px 8px 14px; }
+.welcome-logo { font-size: 50px; margin-bottom: 6px; filter: drop-shadow(2px 3px 0 rgba(200,94,0,0.4)); }
+.welcome-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 17px; font-weight: bold; color: #c85e00;
+  text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 5px;
+}
+.welcome-sub { font-size: 12px; color: #666; margin-bottom: 14px; font-style: italic; }
+.welcome-body { font-size: 12px; line-height: 1.7; color: #333; max-width: 320px; margin-bottom: 18px; font-family: Tahoma, Arial, sans-serif; }
+.welcome-btn {
+  height: 30px; padding: 0 22px;
+  font-size: 12px; font-family: Tahoma, Arial, sans-serif; font-weight: bold;
+  border: 2px outset #c8c4b8; background: #d4d0c8; color: #000;
+  margin-bottom: 14px;
+}
+.welcome-btn:hover { background: #e4e0d4; }
+.welcome-btn:active { border-style: inset; }
+.welcome-footer { font-size: 10px; color: #999; font-family: 'Courier New', Courier, monospace; }
 
-  .writings-section { border-top: 1px solid var(--border); }
-  .writing-item {
-    display: grid;
-    grid-template-columns: 80px 1fr 160px;
-    align-items: center;
-    padding: 20px 32px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.15s;
-    gap: 32px;
-    text-decoration: none;
-    color: inherit;
-  }
-  .writing-item:hover { background: var(--parchment-dark); }
-  .writing-num { font-family: var(--mono); font-size: 11px; color: var(--ink-light); letter-spacing: 0.1em; }
-  .writing-title { font-family: var(--cond); font-size: 22px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
-  .writing-title span { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 16px; display: block; color: var(--ink-mid); text-transform: none; margin-top: 2px; letter-spacing: 0; }
-  .writing-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); text-align: right; }
+/* ===== TASKBAR ===== */
+#taskbar {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 40px;
+  background: linear-gradient(180deg, #1a5298 0%, #2b75c8 50%, #1a5298 100%);
+  display: flex; align-items: center; gap: 0;
+  z-index: 10000;
+  border-top: 1px solid #5888c8;
+  padding: 0 4px;
+}
+#start-btn {
+  height: 32px; padding: 0 10px;
+  font-size: 13px; font-family: Tahoma, Arial, sans-serif; font-weight: bold;
+  color: white;
+  background: linear-gradient(180deg, #5cb040 0%, #3a8028 50%, #2a6818 100%);
+  border: none; border-radius: 0 14px 14px 0;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+  letter-spacing: 0.05em; flex-shrink: 0; margin-right: 6px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 1px 0 3px rgba(0,0,0,0.3);
+}
+#start-btn:hover { background: linear-gradient(180deg, #6cc050 0%, #4a9038 50%, #3a7828 100%); }
+#start-btn:active { background: linear-gradient(180deg, #3a9020 0%, #2a7818 100%); box-shadow: inset 0 2px 3px rgba(0,0,0,0.3); }
+#taskbar-windows { flex: 1; display: flex; gap: 2px; overflow: hidden; align-items: center; height: 100%; padding: 4px 0; }
+.tbtn {
+  height: 28px; max-width: 200px; min-width: 90px;
+  padding: 0 8px; font-size: 11px; font-family: Tahoma, Arial, sans-serif;
+  color: white; background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+}
+.tbtn:hover { background: rgba(255,255,255,0.22); }
+.tbtn.focused { background: rgba(0,0,0,0.25); border-color: rgba(255,255,255,0.25); box-shadow: inset 1px 1px 2px rgba(0,0,0,0.35); }
+@media (max-width: 1199px) { .tbtn { min-width: 70px; } }
+#clock {
+  font-size: 11px; font-family: Tahoma, Arial, sans-serif;
+  color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  padding: 0 12px 0 8px; height: 32px;
+  display: flex; align-items: center;
+  border-left: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,60,0.22); flex-shrink: 0;
+}
 
-  footer {
-    border-top: 1px solid var(--border);
-    background: oklch(12% 0.042 148);
-    color: var(--ink);
-    padding: 60px 32px 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 40px;
-    align-items: end;
-  }
-  .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-  .footer-brand img { width: 36px; height: 36px; image-rendering: pixelated; opacity: 0.9; }
-  .footer-brand-name { font-family: var(--cond); font-size: 24px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
-  .footer-tagline { font-family: var(--serif); font-size: 14px; font-style: italic; color: var(--ink-mid); line-height: 1.6; }
-  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-  .footer-links a { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-light); text-decoration: none; transition: color 0.15s; }
-  .footer-links a:hover { color: var(--gold); }
-  .footer-copy { font-family: var(--mono); font-size: 9px; color: var(--ink-light); text-align: right; letter-spacing: 0.1em; line-height: 1.8; }
+/* ===== START MENU ===== */
+#start-menu {
+  position: fixed; bottom: 40px; left: 0;
+  width: 290px; background: white;
+  border: 2px solid #316ac5;
+  display: none; flex-direction: column;
+  z-index: 9999;
+  box-shadow: 4px -4px 14px rgba(0,0,0,0.35);
+}
+.sm-header {
+  background: linear-gradient(90deg, #1a4cb8 0%, #4888e0 100%);
+  padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+}
+.sm-header-icon { font-size: 30px; }
+.sm-header-text { font-size: 13px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); line-height: 1.3; }
+.sm-header-text span { display: block; font-size: 10px; font-weight: normal; opacity: 0.8; }
+.sm-body { display: flex; flex-direction: column; }
+.sm-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 12px;
+  font-size: 12px; font-family: Tahoma, Arial, sans-serif;
+  cursor: default; border: none; background: none; text-align: left; width: 100%;
+}
+.sm-item:hover { background: #316ac5; color: white; }
+.sm-item:hover .sm-sub { color: rgba(255,255,255,0.75); }
+.sm-icon { font-size: 18px; flex-shrink: 0; }
+.sm-label { flex: 1; line-height: 1.25; }
+.sm-sub { display: block; font-size: 10px; color: #888; }
+.sm-div { height: 1px; background: #d8d0c8; margin: 3px 0; }
+.sm-footer { background: #d4d0c8; border-top: 1px solid #a8a098; padding: 5px 8px; display: flex; justify-content: flex-end; }
+.sm-shutdown {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; font-size: 11px; font-family: Tahoma, Arial, sans-serif;
+  border: 2px outset #c0bca8; background: #d4d0c8; color: #000;
+}
+.sm-shutdown:hover { background: #e4e0d4; }
 
-  @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { align-items: flex-start; }
-    .archive-grid { columns: 2; }
-    .manifesto-section { grid-template-columns: 1fr; }
-    .about-section { grid-template-columns: 1fr; }
-    footer { grid-template-columns: 1fr; }
-    .writing-item { grid-template-columns: 60px 1fr; }
-    .writing-tag { display: none; }
-  }
+/* ===== CONTEXT MENU ===== */
+#ctx-menu {
+  position: fixed; background: white;
+  border: 1px solid #909090;
+  box-shadow: 2px 2px 7px rgba(0,0,0,0.32);
+  z-index: 9998; display: none; min-width: 190px;
+}
+.ctx-item {
+  display: block; padding: 5px 22px;
+  font-size: 12px; font-family: Tahoma, Arial, sans-serif;
+  cursor: default; white-space: nowrap;
+  border: none; background: none; text-align: left; width: 100%;
+}
+.ctx-item:hover { background: #316ac5; color: white; }
+.ctx-item.dim { color: #b0b0b0; pointer-events: none; }
+.ctx-sep { height: 1px; background: #d8d0c8; margin: 3px 0; }
+
+/* ===== XP DIALOGS ===== */
+.xp-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.12);
+  z-index: 20000; display: none;
+  align-items: center; justify-content: center;
+}
+.xp-dialog {
+  background: #ECE9D8;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.45);
+  min-width: 300px; max-width: 440px;
+}
+.xp-dialog .title-bar { cursor: default; }
+.xp-body { padding: 18px 20px 14px; }
+.xp-msg { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; font-size: 12px; line-height: 1.6; color: #000; }
+.xp-msg-icon { font-size: 28px; flex-shrink: 0; }
+.xp-btns { display: flex; justify-content: flex-end; gap: 8px; }
+.xp-btn {
+  height: 26px; min-width: 80px; padding: 0 14px;
+  font-size: 11px; font-family: Tahoma, Arial, sans-serif;
+  border: 2px outset #c8c4b8; background: #d4d0c8; color: #000;
+}
+.xp-btn:hover { background: #e4e0d4; }
+.xp-btn:active { border-style: inset; }
+.xp-input {
+  display: block; width: 100%; height: 24px;
+  border: 2px inset #a0a098; padding: 0 6px;
+  font-size: 12px; font-family: Tahoma, Arial, sans-serif;
+  background: white; color: #000; margin-bottom: 14px;
+}
+
+/* ===== SHUTDOWN ===== */
+#shutdown-overlay {
+  position: fixed; inset: 0; background: #000;
+  z-index: 30000; display: none;
+  align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 1.5s ease;
+}
+#shutdown-overlay.vis { opacity: 1; }
+#shutdown-msg {
+  font-family: Tahoma, Arial, sans-serif; font-size: 18px; color: white;
+  opacity: 0; transition: opacity 1s ease; text-align: center; line-height: 1.7;
+}
+#shutdown-msg.vis { opacity: 1; }
 </style>
 </head>
 <body>
-<div id="root"></div>
 
-<script type="text/babel">
+<!-- ===== DESKTOP ===== -->
+<div id="desktop">
 
-const ARCHIVE_ITEMS = [
-  {
-    id: 1,
-    title: "Raining So Hard It Hurts",
-    tag: "Pop Culture",
-    cat: "popculture",
-    desc: "Comic panel. Rain and red capes. The kind of image that hits before you know why.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/comic-rain.jpg",
-    iglink: "https://www.instagram.com/p/DXmLBOriMHl/"
-  },
-  {
-    id: 2,
-    title: "Make Your Own Money",
-    tag: "Archive",
-    cat: "vintage",
-    desc: "A mug with a manifesto. Make your own money and marry someone funny.",
-    era: "2024",
-    medium: "Found Object",
-    image: "images/coffee-mug.jpg",
-    iglink: "https://www.instagram.com/p/DXmZD74EvjT/"
-  },
-  {
-    id: 3,
-    title: "Through The Trees",
-    tag: "Pop Culture",
-    cat: "popculture",
-    desc: "Golden hour in a forest. A rider disappearing into the light.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/forest-horse.jpg",
-    iglink: ""
-  },
-  {
-    id: 4,
-    title: "Still Standing",
-    tag: "Pop Culture",
-    cat: "popculture",
-    desc: "Rain-soaked. Beaten. Not done. The image says everything the caption doesn't need to.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/captain-america.jpg",
-    iglink: ""
-  },
-  {
-    id: 5,
-    title: "Only Star Left",
-    tag: "Pop Culture",
-    cat: "popculture",
-    desc: "A figure alone in the dark on a single spotlight. Everything else is void.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/figure-darkness.jpg",
-    iglink: ""
-  },
-  {
-    id: 6,
-    title: "Potato Salad",
-    tag: "Pop Culture",
-    cat: "popculture",
-    desc: "ASAP Rocky and Tyler the Creator. Paris. A rainbow. Maximum style, zero effort.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/potato-salad.jpg",
-    iglink: "https://www.instagram.com/p/DXmZD74EvjT/"
-  },
-  {
-    id: 7,
-    title: "To Charles",
-    tag: "Archive",
-    cat: "vintage",
-    desc: "Schumacher's handwritten note on Leclerc's helmet. Whatever you do, be happy and smile.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/schumacher-helmet.jpg",
-    iglink: ""
-  },
-  {
-    id: 8,
-    title: "Red Sky",
-    tag: "Pop Culture",
-    cat: "popculture",
-    desc: "Blonde. Masked. Gun to the head. Crimson background. Total composure.",
-    era: "2024",
-    medium: "Reference",
-    image: "images/comic-gun.jpg",
-    iglink: ""
-  },
-];
+  <!-- ICONS -->
+  <div class="icon" id="icon-welcome" style="left:28px;top:18px"
+       onclick="selectIcon('welcome')" ondblclick="WM.open('welcome')">
+    <div class="icon-img">📁</div>
+    <div class="icon-label">The Life Folder</div>
+  </div>
 
-const WRITINGS = [
-  { id:1, num:"001", title:"Be Delusional, So You Can Be Great", sub:"On manufacturing belief before you have proof", tag:"Essay", date:"Dec 2025", link:"https://thelifefolder.substack.com" },
-  { id:2, num:"002", title:"This Is The Life Folder", sub:"What it is, what it's becoming, why it matters", tag:"Essay", date:"Dec 19, 2025", link:"https://thelifefolder.substack.com" },
-];
+  <div class="icon" id="icon-readme" style="left:28px;top:118px"
+       onclick="selectIcon('readme')" ondblclick="WM.open('readme')">
+    <div class="icon-img">📝</div>
+    <div class="icon-label">README.TXT</div>
+  </div>
 
-const CATS = ["all","vintage","moodboard","writing","popculture"];
-const CAT_LABELS = { all:"All", vintage:"Vintage", moodboard:"Mood Boards", writing:"Writing", popculture:"Pop Culture" };
+  <div class="icon" id="icon-shop" style="left:28px;top:218px"
+       onclick="selectIcon('shop')" ondblclick="WM.open('shop')">
+    <div class="icon-img">🛍️</div>
+    <div class="icon-label">Shop</div>
+  </div>
 
-const logoSrc = 'uploads/images_upload-1777114486858.png';
+  <div class="icon" id="icon-tshirts" style="left:28px;top:318px"
+       onclick="selectIcon('tshirts')" ondblclick="WM.open('tshirts')">
+    <div class="icon-img">👕</div>
+    <div class="icon-label">T-Shirts</div>
+  </div>
 
-function ArchiveCard({ item, onClick }) {
-  return (
-    <div className="archive-item" onClick={() => onClick(item)}>
-      <img src={item.image} alt={item.title} loading="lazy" />
-      <div className="item-overlay">
-        <div className="item-overlay-title">{item.title}</div>
-        <div className="item-overlay-tag">{item.tag} · {item.era}</div>
+  <div class="icon" id="icon-pants" style="left:28px;top:418px"
+       onclick="selectIcon('pants')" ondblclick="WM.open('pants')">
+    <div class="icon-img">👖</div>
+    <div class="icon-label">Pants</div>
+  </div>
+
+  <div class="icon" id="icon-outerwear" style="left:122px;top:18px"
+       onclick="selectIcon('outerwear')" ondblclick="WM.open('outerwear')">
+    <div class="icon-img">🧥</div>
+    <div class="icon-label">Outerwear</div>
+  </div>
+
+  <div class="icon" id="icon-journal" style="left:122px;top:118px"
+       onclick="selectIcon('journal')" ondblclick="WM.open('journal')">
+    <div class="icon-img">📓</div>
+    <div class="icon-label">Journal</div>
+  </div>
+
+  <div class="icon" id="icon-about" style="left:122px;top:218px"
+       onclick="selectIcon('about')" ondblclick="WM.open('about')">
+    <div class="icon-img">❤️</div>
+    <div class="icon-label">About Us</div>
+  </div>
+
+  <div class="icon" id="icon-recycle" style="right:28px;bottom:8px"
+       onclick="selectIcon('recycle')" ondblclick="WM.open('recycle')">
+    <div class="icon-img">🗑️</div>
+    <div class="icon-label">Recycle Bin</div>
+  </div>
+
+
+  <!-- ===== WINDOWS ===== -->
+
+  <!-- WELCOME.EXE -->
+  <div class="window" id="win-welcome" style="width:min(420px, 85vw)">
+    <div class="title-bar" data-id="welcome">
+      <div class="title-icon">📁</div>
+      <div class="title-text">Welcome.exe</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('welcome')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('welcome')">✕</button>
       </div>
     </div>
-  );
-}
-
-function Modal({ item, onClose }) {
-  if (!item) return null;
-  React.useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [onClose]);
-
-  return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-drawer" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <span style={{fontFamily:'var(--mono)',fontSize:'9px',letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--ink-light)'}}>
-            {item.tag} · TLF Archive
-          </span>
-          <button className="modal-close" onClick={onClose}>Close ✕</button>
+    <div class="window-body" style="padding:20px 24px">
+      <div class="welcome-wrap">
+        <div class="welcome-logo">📁</div>
+        <div class="welcome-title">The Life Folder</div>
+        <div class="welcome-sub">a place for everything that makes life, life.</div>
+        <div class="welcome-body">
+          We're building a gender-neutral clothing brand from the ground up.
+          This is our folder — open it and see what's inside.
         </div>
-        <div className="modal-body">
-          <img className="modal-img" src={item.image} alt={item.title} />
-          <div className="modal-tag">{item.tag}</div>
-          <div className="modal-title">{item.title}</div>
-          <div className="modal-divider"></div>
-          <div className="modal-desc">{item.desc}</div>
-          <div className="modal-meta">
-            <div>
-              <div className="modal-meta-label">Era</div>
-              <div className="modal-meta-val">{item.era}</div>
-            </div>
-            <div>
-              <div className="modal-meta-label">Medium</div>
-              <div className="modal-meta-val">{item.medium}</div>
-            </div>
-            <div>
-              <div className="modal-meta-label">Category</div>
-              <div className="modal-meta-val" style={{textTransform:'capitalize'}}>{CAT_LABELS[item.cat]}</div>
-            </div>
-            <div>
-              <div className="modal-meta-label">Filed by</div>
-              <div className="modal-meta-val">TLF</div>
-            </div>
-          </div>
-          {item.iglink && (
-            <a className="modal-ig-btn" href={item.iglink} target="_blank" rel="noopener noreferrer">
-              View on Instagram ↗
-            </a>
-          )}
-        </div>
+        <button class="welcome-btn" onclick="WM.close('welcome')">Open Folder ▶</button>
+        <div class="welcome-footer">v0.1 — just getting started</div>
       </div>
     </div>
-  );
-}
+  </div>
 
-function App() {
-  const [cat, setCat] = React.useState('all');
-  const [modal, setModal] = React.useState(null);
-
-  const filtered = cat === 'all' ? ARCHIVE_ITEMS : ARCHIVE_ITEMS.filter(i => i.cat === cat);
-
-  const TICKER_ITEMS = ['TheLifeFolder','✦','Archive','✦','Est. 2024','✦','Everything That Matters, Filed','✦','Vintage','✦','Culture','✦','Craft','✦'];
-  const tickerContent = [...TICKER_ITEMS,...TICKER_ITEMS].map((t,i) =>
-    t === '✦' ? <span className="dot" key={i}>✦</span> : <span key={i}>{t}</span>
-  );
-
-  return (
-    <>
-      <div className="ticker-wrap">
-        <div className="ticker-track">{tickerContent}</div>
+  <!-- README.TXT — NOTEPAD -->
+  <div class="window" id="win-readme" style="width:min(520px, 90vw);height:420px">
+    <div class="title-bar" data-id="readme">
+      <div class="title-icon">📝</div>
+      <div class="title-text">README.TXT — Notepad</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('readme')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('readme')">✕</button>
       </div>
+    </div>
+    <div class="notepad-menubar">
+      <button>File</button>
+      <button>Edit</button>
+      <button>View</button>
+      <button>Help</button>
+    </div>
+    <div class="notepad-content">
+      <pre>ABOUT.TXT
+——————————————————————————————————————————
 
-      <nav>
-        <div className="nav-logo" onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
-          <img src={logoSrc} alt="TLF" />
-          <span className="nav-wordmark">TheLifeFolder</span>
-        </div>
-        <ul className="nav-links">
-          <li><a href="#archive">Archive</a></li>
-          <li><a href="#manifesto">Manifesto</a></li>
-          <li><a href="#writings">Writing</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
+The Life Folder started with a simple idea:
+your wardrobe is an archive.
 
-      <section className="hero" id="top">
-        <div className="hero-left">
-          <div className="hero-eyebrow">Est. 2024 · Personal Archive · Becoming a Brand</div>
-          <h1 className="hero-title">
-            The<br/><em>Life</em><br/>Folder
-          </h1>
-          <p className="hero-sub">everything that matters, filed.</p>
-        </div>
-        <div className="hero-right">
-          <div className="hero-logo-wrap">
-            <img src={logoSrc} alt="TheLifeFolder" />
-          </div>
-          <div className="hero-index">
-            <strong>{ARCHIVE_ITEMS.length}</strong>
-            items filed
-            <br/><br/>
-            <strong>{WRITINGS.length}</strong>
-            texts written
-          </div>
-        </div>
-      </section>
+Not of trends — of moments.
+The hoodie that got you through a hard winter.
+The shirt you were wearing when something changed.
+The thing you picked up because it just felt right.
 
-      <div id="archive">
-        <div className="section-label">§ Archive · Browse the Folder</div>
-        <section className="archive-section">
-          <div className="filter-bar">
-            {CATS.map(c => (
-              <button key={c} className={`filter-btn${cat===c?' active':''}`} onClick={() => setCat(c)}>
-                {CAT_LABELS[c]}
-              </button>
-            ))}
-          </div>
-          <div className="archive-grid">
-            {filtered.map(item => (
-              <ArchiveCard key={item.id} item={item} onClick={setModal} />
-            ))}
-          </div>
-        </section>
+We're building a gender-neutral clothing brand
+that believes in making things that mean something.
+Slow. Intentional. For keeps.
+
+We're just getting started.
+No products yet — just a name, a vision,
+and a folder full of things we want to make.
+We think that's enough for now.
+
+— TLF</pre>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <div class="window" id="win-shop" style="width:min(580px, 90vw)">
+    <div class="title-bar" data-id="shop">
+      <div class="title-icon">🛍️</div>
+      <div class="title-text">Shop — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('shop')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('shop')">✕</button>
       </div>
-
-      <div id="manifesto">
-        <div className="section-label">§ Manifesto · The Why</div>
-        <section className="manifesto-section">
-          <div className="manifesto-left">
-            <div className="manifesto-heading">What<br/>This<br/>Is</div>
-            <div className="manifesto-text">
-              A folder is just a container. But the life folder is different —
-              it's the place where you put things that matter before you
-              know why they matter. The vintage find that shaped your eye.
-              The campaign image that changed how you understood beauty.
-              The essay that made you want to make things.
-              <br/><br/>
-              This is that folder. Not a shop. Not a brand yet.
-              Something more honest than that — a record of becoming.
-            </div>
-            <div className="manifesto-pull">"Archive first.<br/>Brand later.<br/>Always."</div>
-          </div>
-          <div className="manifesto-right">
-            <div className="manifesto-heading" style={{color:'oklch(14% 0.04 148)'}}>The<br/>Rules</div>
-            <div className="manifesto-text">
-              I. Save what moves you, not what performs.<br/><br/>
-              II. The reference is not the thing — it's the conversation between things.<br/><br/>
-              III. Vintage is not nostalgia. It is evidence.<br/><br/>
-              IV. A brand is just a point of view, repeated with conviction.<br/><br/>
-              V. The folder stays open. The archive is never finished.
-            </div>
-          </div>
-        </section>
+    </div>
+    <div class="window-body">
+      <div class="win-header">Shop — Loading...</div>
+      <div class="progress-wrap">
+        <div class="progress-label">first drop loading...</div>
+        <div class="progress-track"><div class="progress-fill" id="shop-progress"></div></div>
+        <div class="progress-pct">37%</div>
       </div>
-
-      <div id="writings">
-        <div className="section-label">§ Writing · Filed Texts</div>
-        <section className="writings-section">
-          {WRITINGS.map(w => (
-            <a key={w.id} className="writing-item" href={w.link} target="_blank" rel="noopener noreferrer">
-              <div className="writing-num">{w.num}</div>
-              <div className="writing-title">
-                {w.title}
-                <span>{w.sub}</span>
-              </div>
-              <div className="writing-tag">{w.tag}<br/>{w.date}</div>
-            </a>
-          ))}
-        </section>
+      <hr class="win-divider">
+      <div class="win-body">
+        Our first collection is in progress. We're taking our time with it — making sure every piece earns its place.
       </div>
-
-      <div id="about">
-        <section className="about-section">
-          <div className="about-label">About<br/>TLF</div>
-          <div>
-            <div className="about-heading">A Folder<br/>With a<br/>Future</div>
-          </div>
-          <div>
-            <div className="about-body">
-              TheLifeFolder started as exactly that — a folder.
-              A personal archive of references, vintage finds, pop culture
-              moments, and writings that felt too important to lose and
-              too personal to share anywhere else.
-              <br/><br/>
-              It is becoming a fashion brand. Not because fashion needs
-              another brand, but because this archive has a point of view
-              that deserves garments. The reference comes first.
-              The collection follows.
-              <br/><br/>
-              Currently: building. Eventually: dropping.
-            </div>
-          </div>
-        </section>
+      <div class="win-signup-label">Sign up to be among the first to know when it drops.</div>
+      <div class="win-email-row">
+        <input class="win-email-input" id="shop-email" type="email" placeholder="your@email.com">
+        <button class="win-email-btn" onclick="handleSignup('shop')">OK</button>
       </div>
+      <div class="win-confirm" id="shop-confirm">✓ You're on the list.</div>
+    </div>
+  </div>
 
-      <footer>
-        <div>
-          <div className="footer-brand">
-            <img src={logoSrc} alt="TLF" />
-            <span className="footer-brand-name">TLF</span>
-          </div>
-          <div className="footer-tagline">everything that matters, filed.</div>
+  <!-- T-SHIRTS -->
+  <div class="window" id="win-tshirts" style="width:min(520px, 90vw)">
+    <div class="title-bar" data-id="tshirts">
+      <div class="title-icon">👕</div>
+      <div class="title-text">T-Shirts — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('tshirts')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('tshirts')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header">👕 T-Shirts</div>
+      <div class="win-status">coming soon...</div>
+      <div class="win-body">The base layer. The thing you reach for first. We're working on cuts that feel broken in from day one.</div>
+      <hr class="win-divider">
+      <div class="win-signup-label">Sign up to be among the first to know when they drop.</div>
+      <div class="win-email-row">
+        <input class="win-email-input" id="tshirts-email" type="email" placeholder="your@email.com">
+        <button class="win-email-btn" onclick="handleSignup('tshirts')">OK</button>
+      </div>
+      <div class="win-confirm" id="tshirts-confirm">✓ You're on the list.</div>
+    </div>
+  </div>
+
+  <!-- PANTS -->
+  <div class="window" id="win-pants" style="width:min(520px, 90vw)">
+    <div class="title-bar" data-id="pants">
+      <div class="title-icon">👖</div>
+      <div class="title-text">Pants — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('pants')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('pants')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header">👖 Pants</div>
+      <div class="win-status">coming soon...</div>
+      <div class="win-body">Bottoms that belong in your folder. We're working on the fit — the kind that feels like it's already yours from the first wear.</div>
+      <hr class="win-divider">
+      <div class="win-signup-label">Sign up to be among the first to know when they drop.</div>
+      <div class="win-email-row">
+        <input class="win-email-input" id="pants-email" type="email" placeholder="your@email.com">
+        <button class="win-email-btn" onclick="handleSignup('pants')">OK</button>
+      </div>
+      <div class="win-confirm" id="pants-confirm">✓ You're on the list.</div>
+    </div>
+  </div>
+
+  <!-- OUTERWEAR -->
+  <div class="window" id="win-outerwear" style="width:min(520px, 90vw)">
+    <div class="title-bar" data-id="outerwear">
+      <div class="title-icon">🧥</div>
+      <div class="title-text">Outerwear — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('outerwear')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('outerwear')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header">🧥 Outerwear</div>
+      <div class="win-status">coming soon...</div>
+      <div class="win-body">The thing you throw on last. We're building pieces that make the whole fit make sense.</div>
+      <hr class="win-divider">
+      <div class="win-signup-label">Sign up to be among the first to know when they drop.</div>
+      <div class="win-email-row">
+        <input class="win-email-input" id="outerwear-email" type="email" placeholder="your@email.com">
+        <button class="win-email-btn" onclick="handleSignup('outerwear')">OK</button>
+      </div>
+      <div class="win-confirm" id="outerwear-confirm">✓ You're on the list.</div>
+    </div>
+  </div>
+
+  <!-- JOURNAL -->
+  <div class="window" id="win-journal" style="width:min(520px, 90vw)">
+    <div class="title-bar" data-id="journal">
+      <div class="title-icon">📓</div>
+      <div class="title-text">Journal — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('journal')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('journal')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header" style="margin-bottom:12px">Journal</div>
+      <ul class="journal-list">
+        <li class="journal-entry">
+          <span class="journal-entry-icon">📄</span>
+          <a href="https://thelifefolder.substack.com" target="_blank" rel="noopener">
+            001 — Be Delusional, So You Can Be Great
+          </a>
+        </li>
+        <li class="journal-entry">
+          <span class="journal-entry-icon">📄</span>
+          <a href="https://thelifefolder.substack.com" target="_blank" rel="noopener">
+            002 — This Is The Life Folder
+          </a>
+        </li>
+      </ul>
+      <div class="journal-footer">
+        Read more on <a href="https://thelifefolder.substack.com" target="_blank" rel="noopener">Substack ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT US -->
+  <div class="window" id="win-about" style="width:min(520px, 90vw)">
+    <div class="title-bar" data-id="about">
+      <div class="title-icon">❤️</div>
+      <div class="title-text">About Us — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('about')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('about')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header">The Life Folder</div>
+      <div class="win-status">Est. 2024. Organising the chaos of being human.</div>
+      <div class="win-body">
+        TLF is a creative project and clothing brand built around the idea that the things you keep say more about you than the things you buy.
+        We archive, we write, we make. Slowly. Intentionally.
+      </div>
+      <hr class="win-divider">
+      <div class="about-links">
+        <a href="https://www.instagram.com/thelifefolder" target="_blank" rel="noopener">📸 @thelifefolder on Instagram ↗</a>
+        <a href="https://thelifefolder.substack.com" target="_blank" rel="noopener">📰 thelifefolder.substack.com ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECYCLE BIN -->
+  <div class="window" id="win-recycle" style="width:min(580px, 90vw)">
+    <div class="title-bar" data-id="recycle">
+      <div class="title-icon">🗑️</div>
+      <div class="title-text">Recycle Bin</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('recycle')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('recycle')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header" style="margin-bottom:12px">Deleted Ideas</div>
+      <ul class="recycle-list">
+        <li class="recycle-item">
+          <span class="recycle-item-icon">🖼️</span>
+          <span class="r-name">Logo_with_a_crown.psd</span>
+          <span class="r-note">too loud</span>
+        </li>
+        <li class="recycle-item">
+          <span class="recycle-item-icon">📄</span>
+          <span class="r-name">Drop_200pieces.doc</span>
+          <span class="r-note">too much too soon</span>
+        </li>
+        <li class="recycle-item">
+          <span class="recycle-item-icon">🖼️</span>
+          <span class="r-name">ColourfulPalette_v3.jpg</span>
+          <span class="r-note">not us</span>
+        </li>
+        <li class="recycle-item">
+          <span class="recycle-item-icon">⚙️</span>
+          <span class="r-name">FastFashion_collab.exe</span>
+          <span class="r-note">never</span>
+        </li>
+        <li class="recycle-item">
+          <span class="recycle-item-icon">📄</span>
+          <span class="r-name">LaunchIn2weeks.txt</span>
+          <span class="r-note">not ready</span>
+        </li>
+        <li class="recycle-item">
+          <span class="recycle-item-icon">📄</span>
+          <span class="r-name">Generic_streetwear_name.doc</span>
+          <span class="r-note">deleted permanently</span>
+        </li>
+      </ul>
+      <div class="recycle-footer">These files have been permanently deleted.</div>
+    </div>
+  </div>
+
+</div><!-- /desktop -->
+
+
+<!-- ===== TASKBAR ===== -->
+<div id="taskbar">
+  <button id="start-btn" onclick="toggleStartMenu()">📁 start</button>
+  <div id="taskbar-windows"></div>
+  <div id="clock">00:00</div>
+</div>
+
+
+<!-- ===== START MENU ===== -->
+<div id="start-menu">
+  <div class="sm-header">
+    <div class="sm-header-icon">📁</div>
+    <div class="sm-header-text">
+      The Life Folder
+      <span>everything that matters, filed.</span>
+    </div>
+  </div>
+  <div class="sm-body">
+    <button class="sm-item" onclick="smOpen('welcome')">
+      <span class="sm-icon">📁</span>
+      <span class="sm-label">Welcome.exe<span class="sm-sub">Home screen</span></span>
+    </button>
+    <button class="sm-item" onclick="smOpen('about')">
+      <span class="sm-icon">❤️</span>
+      <span class="sm-label">About.txt<span class="sm-sub">Our story</span></span>
+    </button>
+    <div class="sm-div"></div>
+    <button class="sm-item" onclick="smOpen('shop')">
+      <span class="sm-icon">🛍️</span>
+      <span class="sm-label">Shop<span class="sm-sub">Coming soon</span></span>
+    </button>
+    <button class="sm-item" onclick="smOpen('tshirts')">
+      <span class="sm-icon">👕</span>
+      <span class="sm-label">T-Shirts<span class="sm-sub">Coming soon</span></span>
+    </button>
+    <button class="sm-item" onclick="smOpen('pants')">
+      <span class="sm-icon">👖</span>
+      <span class="sm-label">Pants<span class="sm-sub">Coming soon</span></span>
+    </button>
+    <button class="sm-item" onclick="smOpen('outerwear')">
+      <span class="sm-icon">🧥</span>
+      <span class="sm-label">Outerwear<span class="sm-sub">Coming soon</span></span>
+    </button>
+    <div class="sm-div"></div>
+    <button class="sm-item" onclick="smOpen('journal')">
+      <span class="sm-icon">📓</span>
+      <span class="sm-label">Journal<span class="sm-sub">Stories & updates</span></span>
+    </button>
+    <button class="sm-item" onclick="smOpen('readme')">
+      <span class="sm-icon">📝</span>
+      <span class="sm-label">README.TXT<span class="sm-sub">Manifesto</span></span>
+    </button>
+  </div>
+  <div class="sm-footer">
+    <button class="sm-shutdown" onclick="initiateShutdown()">⏻ Shut Down</button>
+  </div>
+</div>
+
+
+<!-- ===== CONTEXT MENU ===== -->
+<div id="ctx-menu">
+  <button class="ctx-item dim">View</button>
+  <button class="ctx-item dim">Arrange Icons</button>
+  <button class="ctx-item" onclick="location.reload()">Refresh</button>
+  <div class="ctx-sep"></div>
+  <button class="ctx-item" onclick="showNewFolderDlg()">New Folder</button>
+  <div class="ctx-sep"></div>
+  <button class="ctx-item" onclick="ctxOpen('about')">About The Life Folder</button>
+  <button class="ctx-item" onclick="showPropsDlg()">Properties</button>
+</div>
+
+
+<!-- ===== DIALOGS ===== -->
+
+<!-- Shutdown confirm -->
+<div class="xp-overlay" id="dlg-shutdown">
+  <div class="xp-dialog" style="width:360px">
+    <div class="title-bar">
+      <div class="title-icon">⏻</div>
+      <div class="title-text">Shut Down The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn btn-close" onclick="closeDlg('dlg-shutdown')">✕</button>
+      </div>
+    </div>
+    <div class="xp-body">
+      <div class="xp-msg">
+        <span class="xp-msg-icon">⚠️</span>
+        <span>Are you sure you want to shut down The Life Folder?</span>
+      </div>
+      <div class="xp-btns">
+        <button class="xp-btn" onclick="closeDlg('dlg-shutdown')">Cancel</button>
+        <button class="xp-btn" onclick="confirmShutdown()">Shut Down</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Folder -->
+<div class="xp-overlay" id="dlg-newfolder">
+  <div class="xp-dialog" style="width:340px">
+    <div class="title-bar">
+      <div class="title-icon">📁</div>
+      <div class="title-text">New Folder</div>
+      <div class="title-controls">
+        <button class="title-btn btn-close" onclick="closeDlg('dlg-newfolder')">✕</button>
+      </div>
+    </div>
+    <div class="xp-body">
+      <div class="xp-msg" style="margin-bottom:10px">
+        <span class="xp-msg-icon">📁</span>
+        <span>Name your folder:</span>
+      </div>
+      <input class="xp-input" id="nf-name" type="text" placeholder="New Folder">
+      <div class="xp-btns">
+        <button class="xp-btn" onclick="closeDlg('dlg-newfolder')">Cancel</button>
+        <button class="xp-btn" onclick="createFolder()">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Properties -->
+<div class="xp-overlay" id="dlg-props">
+  <div class="xp-dialog" style="width:320px">
+    <div class="title-bar">
+      <div class="title-icon">📋</div>
+      <div class="title-text">TLF Desktop — Properties</div>
+      <div class="title-controls">
+        <button class="title-btn btn-close" onclick="closeDlg('dlg-props')">✕</button>
+      </div>
+    </div>
+    <div class="xp-body">
+      <div class="xp-msg">
+        <span class="xp-msg-icon">📁</span>
+        <div style="font-size:12px;line-height:1.8">
+          <strong>TLF Desktop v0.1</strong><br>
+          Est. 2024<br>
+          Everything that matters, filed.
         </div>
-        <ul className="footer-links">
-          <li><a href="#archive">Archive</a></li>
-          <li><a href="#manifesto">Manifesto</a></li>
-          <li><a href="#writings">Writing</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-        <div className="footer-copy">
-          © 2025 TheLifeFolder<br/>
-          All rights filed.<br/>
-          Est. 2024
-        </div>
-      </footer>
+      </div>
+      <div class="xp-btns">
+        <button class="xp-btn" onclick="closeDlg('dlg-props')">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <Modal item={modal} onClose={() => setModal(null)} />
-    </>
-  );
-}
+<!-- Shutdown overlay -->
+<div id="shutdown-overlay">
+  <div id="shutdown-msg">It was good to have you.</div>
+</div>
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-</script>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+<!-- ===== JAVASCRIPT ===== -->
 <script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
+'use strict';
+
+// ── Window Manager ────────────────────────────────────────────────────
+const WM = {
+  z: 100,
+  state: {}, // id → { minimized }
+
+  open(id) {
+    const win = document.getElementById('win-' + id);
+    if (!win) return;
+
+    if (this.state[id] && !this.state[id].minimized) {
+      this.focus(id);
+      return;
+    }
+
+    win.style.display = 'flex';
+
+    if (!this.state[id]) {
+      // First open — position the window
+      const dsk = document.getElementById('desktop');
+      const dw = dsk.offsetWidth, dh = dsk.offsetHeight;
+      const ww = win.offsetWidth;
+      let x, y;
+
+      if (id === 'welcome') {
+        // Centre on screen
+        x = Math.max(20, (dw - ww) / 2);
+        y = Math.max(20, (dh - 360) / 2 - 30);
+      } else {
+        // Spread across 15–55% of desktop width, 8–45% of desktop height
+        // with a small extra jitter so repeated opens never land identically
+        x = dw * (0.15 + Math.random() * 0.40);
+        y = dh * (0.08 + Math.random() * 0.37);
       }
+
+      x = Math.max(0, Math.min(dw - ww, x));
+      y = Math.max(0, Math.min(dh - 200, y));
+      win.style.left = Math.round(x) + 'px';
+      win.style.top  = Math.round(y) + 'px';
+
+      this.state[id] = { minimized: false };
+      this._addTbtn(id, win);
+    } else {
+      this.state[id].minimized = false;
+    }
+
+    // Restart shop progress animation
+    if (id === 'shop') {
+      const fill = document.getElementById('shop-progress');
+      if (fill) {
+        fill.style.animation = 'none';
+        void fill.offsetWidth;
+        fill.style.animation = '';
+      }
+    }
+
+    this.focus(id);
+  },
+
+  close(id) {
+    const win = document.getElementById('win-' + id);
+    if (win) win.style.display = 'none';
+    const btn = document.getElementById('tb-' + id);
+    if (btn) btn.remove();
+    delete this.state[id];
+  },
+
+  minimize(id) {
+    if (!this.state[id]) return;
+    const win = document.getElementById('win-' + id);
+    if (win) win.style.display = 'none';
+    this.state[id].minimized = true;
+    const btn = document.getElementById('tb-' + id);
+    if (btn) btn.classList.remove('focused');
+    win && win.classList.add('inactive');
+  },
+
+  restore(id) {
+    if (!this.state[id]) return;
+    const win = document.getElementById('win-' + id);
+    if (win) win.style.display = 'flex';
+    this.state[id].minimized = false;
+    this.focus(id);
+  },
+
+  focus(id) {
+    // Unfocus all
+    Object.keys(this.state).forEach(k => {
+      const w = document.getElementById('win-' + k);
+      if (w) { w.classList.remove('active'); w.classList.add('inactive'); }
+      const b = document.getElementById('tb-' + k);
+      if (b) b.classList.remove('focused');
     });
+    // Focus target
+    const win = document.getElementById('win-' + id);
+    if (win) {
+      win.style.zIndex = ++this.z;
+      win.classList.remove('inactive');
+      win.classList.add('active');
+    }
+    const btn = document.getElementById('tb-' + id);
+    if (btn) btn.classList.add('focused');
+  },
+
+  toggleTb(id) {
+    if (!this.state[id]) return;
+    if (this.state[id].minimized) this.restore(id);
+    else {
+      // Check if focused
+      const btn = document.getElementById('tb-' + id);
+      if (btn && btn.classList.contains('focused')) this.minimize(id);
+      else this.focus(id);
+    }
+  },
+
+  _addTbtn(id, win) {
+    if (document.getElementById('tb-' + id)) return;
+    const label = win.querySelector('.title-text')?.textContent || id;
+    const btn = document.createElement('button');
+    btn.className = 'tbtn';
+    btn.id = 'tb-' + id;
+    btn.textContent = label;
+    btn.onclick = () => this.toggleTb(id);
+    document.getElementById('taskbar-windows').appendChild(btn);
+  },
+};
+
+
+// ── Drag ──────────────────────────────────────────────────────────────
+let drag = null;
+
+document.addEventListener('mousedown', e => {
+  // Window focus on click
+  const win = e.target.closest('.window');
+  if (win && !e.target.closest('.xp-dialog')) {
+    const id = win.id.replace('win-', '');
+    if (WM.state[id]) WM.focus(id);
   }
+
+  // Start drag from title bar (not buttons, not dialogs)
+  const bar = e.target.closest('.title-bar');
+  if (!bar || e.target.closest('.title-controls') || e.target.closest('.xp-dialog')) return;
+  const winEl = bar.closest('.window');
+  if (!winEl) return;
+
+  const id = bar.dataset.id;
+  if (id && WM.state[id]) WM.focus(id);
+
+  drag = {
+    el: winEl,
+    ox: e.clientX - winEl.offsetLeft,
+    oy: e.clientY - winEl.offsetTop,
+  };
+  document.body.style.userSelect = 'none';
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove', e => {
+  if (!drag) return;
+  const dsk = document.getElementById('desktop');
+  const dw = dsk.offsetWidth, dh = dsk.offsetHeight;
+  const ww = drag.el.offsetWidth;
+  let nx = e.clientX - drag.ox;
+  let ny = e.clientY - drag.oy;
+  nx = Math.max(-ww + 80, Math.min(dw - 80, nx));
+  ny = Math.max(0, Math.min(dh - 28, ny));
+  drag.el.style.left = nx + 'px';
+  drag.el.style.top  = ny + 'px';
+});
+
+document.addEventListener('mouseup', () => {
+  if (drag) { drag = null; document.body.style.userSelect = ''; }
+});
+
+
+// ── Icon selection ────────────────────────────────────────────────────
+let activeIcon = null;
+function selectIcon(id) {
+  if (activeIcon) document.getElementById('icon-' + activeIcon)?.classList.remove('selected');
+  activeIcon = id;
+  document.getElementById('icon-' + id)?.classList.add('selected');
+}
+document.getElementById('desktop').addEventListener('click', e => {
+  if (!e.target.closest('.icon') && !e.target.closest('.window')) {
+    if (activeIcon) document.getElementById('icon-' + activeIcon)?.classList.remove('selected');
+    activeIcon = null;
+  }
+});
+
+
+// ── Clock ─────────────────────────────────────────────────────────────
+function tickClock() {
+  const n = new Date();
+  const hh = String(n.getHours()).padStart(2, '0');
+  const mm = String(n.getMinutes()).padStart(2, '0');
+  document.getElementById('clock').textContent = hh + ':' + mm;
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+
+// ── Email signup ──────────────────────────────────────────────────────
+function handleSignup(id) {
+  const inp = document.getElementById(id + '-email');
+  const msg = document.getElementById(id + '-confirm');
+  if (!inp) return;
+  const email = inp.value.trim();
+  if (!email || !email.includes('@')) { inp.focus(); return; }
+  console.log('TLF email signup:', email, '| source:', id);
+  inp.value = '';
+  if (msg) msg.style.display = 'block';
+}
+
+document.querySelectorAll('.win-email-input').forEach(inp => {
+  const id = inp.id.replace('-email', '');
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') handleSignup(id); });
+});
+
+
+// ── Start Menu ────────────────────────────────────────────────────────
+const smEl = document.getElementById('start-menu');
+function toggleStartMenu() {
+  const visible = smEl.style.display === 'flex';
+  smEl.style.display = visible ? 'none' : 'flex';
+}
+function smOpen(id) {
+  smEl.style.display = 'none';
+  WM.open(id);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+    smEl.style.display = 'none';
+  }
+});
+
+
+// ── Context Menu ──────────────────────────────────────────────────────
+const ctxEl = document.getElementById('ctx-menu');
+document.getElementById('desktop').addEventListener('contextmenu', e => {
+  if (e.target.closest('.window') || e.target.closest('#taskbar')) return;
+  e.preventDefault();
+  let x = e.clientX, y = e.clientY;
+  if (x + 200 > window.innerWidth) x = window.innerWidth - 204;
+  if (y + 220 > window.innerHeight) y = window.innerHeight - 224;
+  ctxEl.style.left = x + 'px';
+  ctxEl.style.top  = y + 'px';
+  ctxEl.style.display = 'block';
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#ctx-menu')) ctxEl.style.display = 'none';
+});
+function ctxOpen(id) {
+  ctxEl.style.display = 'none';
+  WM.open(id);
+}
+
+
+// ── Dialogs ───────────────────────────────────────────────────────────
+function openDlg(id) { document.getElementById(id).style.display = 'flex'; }
+function closeDlg(id) { document.getElementById(id).style.display = 'none'; }
+
+function showNewFolderDlg() {
+  ctxEl.style.display = 'none';
+  document.getElementById('nf-name').value = '';
+  openDlg('dlg-newfolder');
+  setTimeout(() => document.getElementById('nf-name').focus(), 60);
+}
+function showPropsDlg() {
+  ctxEl.style.display = 'none';
+  openDlg('dlg-props');
+}
+document.getElementById('nf-name').addEventListener('keydown', e => {
+  if (e.key === 'Enter') createFolder();
+});
+
+
+// ── New folder creation ───────────────────────────────────────────────
+let folderSeq = 0;
+function createFolder() {
+  const name = document.getElementById('nf-name').value.trim() || 'New Folder';
+  closeDlg('dlg-newfolder');
+
+  folderSeq++;
+  const fid = 'cf' + folderSeq;
+  const dsk = document.getElementById('desktop');
+  const dw = dsk.offsetWidth, dh = dsk.offsetHeight;
+  const x = 230 + Math.random() * (dw - 460);
+  const y = 60  + Math.random() * (dh - 260);
+
+  const icon = document.createElement('div');
+  icon.className = 'icon';
+  icon.id = 'icon-' + fid;
+  icon.style.left = Math.round(x) + 'px';
+  icon.style.top  = Math.round(y) + 'px';
+  icon.innerHTML = `<div class="icon-img">📁</div><div class="icon-label">${esc(name)}</div>`;
+  icon.onclick = () => selectIcon(fid);
+  icon.ondblclick = () => openEmptyFolder(fid, name);
+  dsk.appendChild(icon);
+}
+
+function openEmptyFolder(fid, name) {
+  const winId = 'win-' + fid;
+  if (!document.getElementById(winId)) {
+    const w = document.createElement('div');
+    w.className = 'window';
+    w.id = winId;
+    w.style.width = '360px';
+    w.innerHTML = `
+      <div class="title-bar" data-id="${fid}">
+        <div class="title-icon">📁</div>
+        <div class="title-text">${esc(name)}</div>
+        <div class="title-controls">
+          <button class="title-btn" onclick="WM.minimize('${fid}')">—</button>
+          <button class="title-btn">□</button>
+          <button class="title-btn btn-close" onclick="WM.close('${fid}')">✕</button>
+        </div>
+      </div>
+      <div class="window-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:#999;text-align:center">
+        <div style="font-size:42px;margin-bottom:12px">📁</div>
+        <div style="font-size:13px;font-family:Tahoma,Arial,sans-serif">This folder is empty.</div>
+        <div style="font-size:11px;font-style:italic;margin-top:8px;color:#bbb">— TLF</div>
+      </div>`;
+    document.getElementById('desktop').appendChild(w);
+  }
+  WM.open(fid);
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+// ── Shutdown ──────────────────────────────────────────────────────────
+function initiateShutdown() {
+  smEl.style.display = 'none';
+  openDlg('dlg-shutdown');
+}
+function confirmShutdown() {
+  closeDlg('dlg-shutdown');
+  const ov = document.getElementById('shutdown-overlay');
+  const msg = document.getElementById('shutdown-msg');
+  ov.style.display = 'flex';
+  setTimeout(() => ov.classList.add('vis'), 40);
+  setTimeout(() => msg.classList.add('vis'), 1900);
+  setTimeout(() => msg.classList.remove('vis'), 5200);
+  setTimeout(() => {
+    ov.classList.remove('vis');
+    setTimeout(() => { ov.style.display = 'none'; }, 1600);
+  }, 6200);
+}
+
+
+// ── Startup chime (Web Audio API) ─────────────────────────────────────
+function playChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const master = ctx.createGain();
+    master.gain.value = 0.5;
+    master.connect(ctx.destination);
+
+    function note(freq, t, dur, vol) {
+      const osc = ctx.createOscillator();
+      const g   = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(g);
+      g.connect(master);
+      osc.start(t);
+      osc.stop(t + dur);
+    }
+
+    const t0 = ctx.currentTime + 0.08;
+    note(523.25, t0,        1.0, 0.35); // C5
+    note(659.25, t0 + 0.14, 0.95, 0.28); // E5
+    note(783.99, t0 + 0.28, 0.9,  0.22); // G5
+    note(1046.5,  t0 + 0.48, 0.8,  0.15); // C6
+  } catch(_) {}
+}
+
+// Browsers require a user gesture to unlock AudioContext
+let chimePlayed = false;
+function tryChime() {
+  if (chimePlayed) return;
+  chimePlayed = true;
+  playChime();
+  document.removeEventListener('click',    tryChime);
+  document.removeEventListener('keydown',  tryChime);
+  document.removeEventListener('mousedown',tryChime);
+}
+document.addEventListener('click',    tryChime);
+document.addEventListener('keydown',  tryChime);
+document.addEventListener('mousedown',tryChime);
+
+// Try immediately (works if page loaded via user action)
+setTimeout(() => {
+  if (!chimePlayed) { try { playChime(); chimePlayed = true; } catch(_) {} }
+}, 80);
+
+
+// ── Icon column layout — prevent overflow on short screens ────────────
+function layoutIcons() {
+  const dsk = document.getElementById('desktop');
+  const dh  = dsk.offsetHeight;
+
+  // Use 100px gap normally; collapse to 72px when icons would overflow
+  // below (dh - 120). With 5 icons, last icon bottom ≈ top + 70px.
+  // At 100px gap: last top = 18 + 4*100 = 418. Bottom ≈ 488.
+  // Threshold: 488 > dh - 120  →  dh < 608.
+  const gap = dh < 608 ? 72 : 100;
+  const topStart = 18;
+
+  // Column 1 (left 28px): 5 icons
+  const col1 = ['welcome', 'readme', 'shop', 'tshirts', 'pants'];
+  col1.forEach((id, i) => {
+    const el = document.getElementById('icon-' + id);
+    if (el) el.style.top = (topStart + i * gap) + 'px';
+  });
+
+  // Column 2 (left 122px): 3 icons
+  const col2 = ['outerwear', 'journal', 'about'];
+  col2.forEach((id, i) => {
+    const el = document.getElementById('icon-' + id);
+    if (el) el.style.top = (topStart + i * gap) + 'px';
+  });
+  // Recycle Bin is bottom-right fixed — not affected
+}
+layoutIcons();
+
+
+// ── Auto-open Welcome ─────────────────────────────────────────────────
+setTimeout(() => WM.open('welcome'), 1500);
 </script>
+
 </body>
 </html>
