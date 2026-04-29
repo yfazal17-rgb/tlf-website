@@ -427,6 +427,12 @@ html, body {
     <div class="icon-label">About Us</div>
   </div>
 
+  <div class="icon" id="icon-editorial" style="left:122px;top:318px"
+       onclick="selectIcon('editorial')" ondblclick="WM.open('editorial')">
+    <div class="icon-img">🗞️</div>
+    <div class="icon-label">Editorial</div>
+  </div>
+
   <div class="icon" id="icon-recycle" style="right:28px;bottom:8px"
        onclick="selectIcon('recycle')" ondblclick="WM.open('recycle')">
     <div class="icon-img">🗑️</div>
@@ -669,6 +675,25 @@ We think that's enough for now.
     </div>
   </div>
 
+  <!-- EDITORIAL -->
+  <div class="window" id="win-editorial" style="width:min(520px, 90vw)">
+    <div class="title-bar" data-id="editorial">
+      <div class="title-icon">🗞️</div>
+      <div class="title-text">Editorial — The Life Folder</div>
+      <div class="title-controls">
+        <button class="title-btn" onclick="WM.minimize('editorial')">—</button>
+        <button class="title-btn">□</button>
+        <button class="title-btn btn-close" onclick="WM.close('editorial')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="win-header">The Life Folder Editorial</div>
+      <div class="win-body">Essays, archives, and things worth keeping. The editorial side of TLF lives here.</div>
+      <hr class="win-divider">
+      <a href="https://editorial.thelifefolder.com" target="_blank" rel="noopener" class="win-email-btn" style="display:inline-block;text-decoration:none;height:auto;padding:6px 16px;line-height:1.4">Open Editorial ↗</a>
+    </div>
+  </div>
+
   <!-- RECYCLE BIN -->
   <div class="window" id="win-recycle" style="width:min(580px, 90vw)">
     <div class="title-bar" data-id="recycle">
@@ -768,6 +793,10 @@ We think that's enough for now.
     <button class="sm-item" onclick="smOpen('journal')">
       <span class="sm-icon">📓</span>
       <span class="sm-label">Journal<span class="sm-sub">Stories & updates</span></span>
+    </button>
+    <button class="sm-item" onclick="smOpen('editorial')">
+      <span class="sm-icon">🗞️</span>
+      <span class="sm-label">Editorial<span class="sm-sub">Essays & archives</span></span>
     </button>
     <button class="sm-item" onclick="smOpen('readme')">
       <span class="sm-icon">📝</span>
@@ -1299,7 +1328,7 @@ function layoutIcons() {
   });
 
   // Column 2 (left 122px): 3 icons
-  const col2 = ['outerwear', 'journal', 'about'];
+  const col2 = ['outerwear', 'journal', 'about', 'editorial'];
   col2.forEach((id, i) => {
     const el = document.getElementById('icon-' + id);
     if (el) el.style.top = (topStart + i * gap) + 'px';
